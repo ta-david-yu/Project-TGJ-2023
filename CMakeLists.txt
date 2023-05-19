@@ -32,7 +32,9 @@ set(SOURCE_FILES
 # !!! Include your header files here !!!
 set(HEADER_FILES
         include/Components/ExampleComponent.h
-        include/Systems/ExampleSystem.h)
+        include/Systems/ExampleSystem.h
+        include/Components/TurtleComponents.h
+        include/Systems/TurtleSystems.h)
 
 set(INCLUDE_DIRS
         include

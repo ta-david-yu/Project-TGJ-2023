@@ -14,6 +14,8 @@
 // Insert user headers here...
 #include "include/Components/ExampleComponent.h"
 #include "include/Systems/ExampleSystem.h"
+#include "include/Components/TurtleComponents.h"
+#include "include/Systems/TurtleSystems.h"
 
 
 namespace DYE::DYEditor
@@ -124,9 +126,104 @@ namespace DYE::DYEditor
 					}
 			);
 
+		// Component located in include/Components/TurtleComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::TurtleInputComponent>
+			(
+				"Turtle Input Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::TurtleInputComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("ControllerID", component.ControllerID);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::TurtleInputComponent>();
+							component.ControllerID = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("ControllerID", 0);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::TurtleInputComponent>();
+							changed |= ImGuiUtil::DrawIntControl("ControllerID", component.ControllerID); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/TurtleComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::TargetRotationComponent>
+			(
+				"Target Rotation Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::TargetRotationComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("AngleInRadian", component.AngleInRadian);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::TargetRotationComponent>();
+							component.AngleInRadian = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("AngleInRadian", 0);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::TargetRotationComponent>();
+							changed |= ImGuiUtil::DrawFloatControl("AngleInRadian", component.AngleInRadian); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/TurtleComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::TankMovementComponent>
+			(
+				"Tank Movement Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::TankMovementComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("FullSpeedPerSecond", component.FullSpeedPerSecond);
+							serializedComponent.SetPrimitiveTypePropertyValue("InputBuffer", component.InputBuffer);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::TankMovementComponent>();
+							component.FullSpeedPerSecond = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("FullSpeedPerSecond", 1);
+							component.InputBuffer = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("InputBuffer", 0);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::TankMovementComponent>();
+							changed |= ImGuiUtil::DrawFloatControl("FullSpeedPerSecond", component.FullSpeedPerSecond); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("InputBuffer", component.InputBuffer); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
 		// System located in include/Systems/ExampleSystem.h
 		static DYE::DYEditor::Template::ExampleSystem _ExampleSystem;
 		TypeRegistry::RegisterSystem("Example System", &_ExampleSystem);
+
+		// System located in include/Systems/TurtleSystems.h
+		static DYE::DYEditor::TurtleInputSystem _TurtleInputSystem;
+		TypeRegistry::RegisterSystem("Turtle Input System", &_TurtleInputSystem);
+
+		// System located in include/Systems/TurtleSystems.h
+		static DYE::DYEditor::TurtleMovementSystem _TurtleMovementSystem;
+		TypeRegistry::RegisterSystem("Turtle Movement System", &_TurtleMovementSystem);
 
 	}
 
