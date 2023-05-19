@@ -34,7 +34,9 @@ set(HEADER_FILES
         include/Components/ExampleComponent.h
         include/Systems/ExampleSystem.h
         include/Components/TurtleComponents.h
-        include/Systems/TurtleSystems.h)
+        include/Systems/TurtleSystems.h
+        include/Components/HowitzerComponents.h
+        include/Systems/HowitzerSystems.h)
 
 set(INCLUDE_DIRS
         include

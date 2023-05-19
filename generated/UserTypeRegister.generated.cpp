@@ -16,6 +16,8 @@
 #include "include/Systems/ExampleSystem.h"
 #include "include/Components/TurtleComponents.h"
 #include "include/Systems/TurtleSystems.h"
+#include "include/Components/HowitzerComponents.h"
+#include "include/Systems/HowitzerSystems.h"
 
 
 namespace DYE::DYEditor
@@ -213,6 +215,90 @@ namespace DYE::DYEditor
 					}
 			);
 
+		// Component located in include/Components/HowitzerComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::FollowParentPositionComponent>
+			(
+				"Follow Parent Position Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::FollowParentPositionComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("PositionOffset", component.PositionOffset);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::FollowParentPositionComponent>();
+							component.PositionOffset = serializedComponent.GetPrimitiveTypePropertyValueOr<Vector3>("PositionOffset", glm::vec3(0));
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::FollowParentPositionComponent>();
+							changed |= ImGuiUtil::DrawVector3Control("PositionOffset", component.PositionOffset); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/HowitzerComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::HowitzerInputComponent>
+			(
+				"Howitzer Input Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::HowitzerInputComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("AngleStepDegreePerPress", component.AngleStepDegreePerPress);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::HowitzerInputComponent>();
+							component.AngleStepDegreePerPress = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("AngleStepDegreePerPress", 18);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::HowitzerInputComponent>();
+							changed |= ImGuiUtil::DrawFloatControl("AngleStepDegreePerPress", component.AngleStepDegreePerPress); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/HowitzerComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::HowitzerAimingComponent>
+			(
+				"Howitzer Aiming Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::HowitzerAimingComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("AngleDegreeRelativeToParent", component.AngleDegreeRelativeToParent);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::HowitzerAimingComponent>();
+							component.AngleDegreeRelativeToParent = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("AngleDegreeRelativeToParent", 0);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::HowitzerAimingComponent>();
+							changed |= ImGuiUtil::DrawFloatControl("AngleDegreeRelativeToParent", component.AngleDegreeRelativeToParent); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
 		// System located in include/Systems/ExampleSystem.h
 		static DYE::DYEditor::Template::ExampleSystem _ExampleSystem;
 		TypeRegistry::RegisterSystem("Example System", &_ExampleSystem);
@@ -224,6 +310,18 @@ namespace DYE::DYEditor
 		// System located in include/Systems/TurtleSystems.h
 		static DYE::DYEditor::TurtleMovementSystem _TurtleMovementSystem;
 		TypeRegistry::RegisterSystem("Turtle Movement System", &_TurtleMovementSystem);
+
+		// System located in include/Systems/HowitzerSystems.h
+		static DYE::DYEditor::FollowParentPositionSystem _FollowParentPositionSystem;
+		TypeRegistry::RegisterSystem("Follow Parent Position System", &_FollowParentPositionSystem);
+
+		// System located in include/Systems/HowitzerSystems.h
+		static DYE::DYEditor::HowitzerInputSystem _HowitzerInputSystem;
+		TypeRegistry::RegisterSystem("Howitzer Input System", &_HowitzerInputSystem);
+
+		// System located in include/Systems/HowitzerSystems.h
+		static DYE::DYEditor::RotateHowitzerSystem _RotateHowitzerSystem;
+		TypeRegistry::RegisterSystem("Rotate Howitzer System", &_RotateHowitzerSystem);
 
 	}
 
