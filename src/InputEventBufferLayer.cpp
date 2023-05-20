@@ -23,47 +23,43 @@ namespace DYE::DYEditor
 
 	void InputEventBuffingLayer::OnEvent(Event &event)
 	{
-		if (event.GetEventType() != EventType::KeyDown && event.GetEventType() != EventType::KeyUp)
+		if (event.GetEventType() != EventType::KeyDown)
 		{
 			return;
 		}
 
-		bool isPressed = event.GetEventType() == EventType::KeyDown;
 		auto &keyEvent = (KeyEvent &) event;
-
-		//DYE_LOG("%s", keyEvent.ToString().c_str());
-
 		switch (keyEvent.GetKeyCode())
 		{
 			case KeyCode::Up:
-				s_Data.IsIncreaseDistancePressed = isPressed;
+				s_Data.IsIncreaseDistancePressed = true;
 				break;
 			case KeyCode::Down:
-				s_Data.IsDecreaseDistancePressed = isPressed;
+				s_Data.IsDecreaseDistancePressed = true;
 				break;
 			case KeyCode::Space:
-				s_Data.IsFirePressed = isPressed;
+				s_Data.IsFirePressed = true;
 				break;
 			case KeyCode::NumpadPlus:
-				s_Data.IsSliderPushedPressed = isPressed;
+				s_Data.IsSliderPushedPressed = true;
 				break;
 			case KeyCode::NumpadMinus:
-				s_Data.IsSliderPulledPressed = isPressed;
+				s_Data.IsSliderPulledPressed = true;
 				break;
 			case KeyCode::Numpad1:
-				s_Data.IsSimon1Pressed = isPressed;
+				s_Data.IsSimon1Pressed = true;
 				break;
 			case KeyCode::Numpad2:
-				s_Data.IsSimon2Pressed = isPressed;
+				s_Data.IsSimon2Pressed = true;
 				break;
 			case KeyCode::Numpad3:
-				s_Data.IsSimon3Pressed = isPressed;
+				s_Data.IsSimon3Pressed = true;
 				break;
 			case KeyCode::Numpad4:
-				s_Data.IsShellInPressed = isPressed;
+				s_Data.IsShellInPressed = true;
 				break;
 			case KeyCode::Numpad5:
-				s_Data.IsShellOutPressed = isPressed;
+				s_Data.IsShellOutPressed = true;
 				break;
 		}
 
