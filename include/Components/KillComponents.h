@@ -25,7 +25,7 @@ namespace DYE::DYEditor
 	struct CircleColliderComponent
 	{
 		DYE_PROPERTY()
-		DYE::Float Radius;
+		DYE::Float Radius = 1;
 	};
 
 	DYE_COMPONENT("Draw Circle Collider Component", DYE::DYEditor::DrawCircleColliderComponent)

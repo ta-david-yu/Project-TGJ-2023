@@ -21,6 +21,7 @@
 #include "include/Components/KillComponents.h"
 #include "include/Systems/KillSystems.h"
 #include "include/Systems/UISystems.h"
+#include "include/Components/EnvironmentComponents.h"
 
 
 namespace DYE::DYEditor
@@ -459,7 +460,7 @@ namespace DYE::DYEditor
 						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
 						{
 							auto& component = entity.AddOrGetComponent<DYE::DYEditor::CircleColliderComponent>();
-							component.Radius = serializedComponent.GetPrimitiveTypePropertyValueOrDefault<Float>("Radius");
+							component.Radius = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("Radius", 1);
 							return DeserializationResult {};
 						},
 						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
@@ -674,6 +675,33 @@ namespace DYE::DYEditor
 						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
 						{
 							entity.AddOrGetComponent<DYE::DYEditor::TeamPointsUIComponent>();
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							ImGui::Indent();
+							ImGui::TextUnformatted("The component doesn't have any properties (i.e. DYE_PROPERTY).");
+							ImGui::Unindent();
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/EnvironmentComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::BorderComponent>
+			(
+				"Border",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							entity.AddOrGetComponent<DYE::DYEditor::BorderComponent>();
 							return DeserializationResult {};
 						},
 						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)

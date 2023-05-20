@@ -41,7 +41,8 @@ set(HEADER_FILES
         include/Components/KillComponents.h
         include/Systems/KillSystems.h
         include/InputEventBuffingLayer.h
-        include/Systems/UISystems.h)
+        include/Systems/UISystems.h
+        include/Components/EnvironmentComponents.h)
 
 set(INCLUDE_DIRS
         include
