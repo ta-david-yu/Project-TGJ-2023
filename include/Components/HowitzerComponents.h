@@ -21,14 +21,14 @@ namespace DYE::DYEditor
 		KeyCode IncreaseDistanceButton = KeyCode::Up;
 		KeyCode DecreaseDistanceButton = KeyCode::Down;
 
+		KeyCode FireButton = KeyCode::Space;
+
 		DYE_PROPERTY()
 		DYE::Float AngleStepDegreePerPress = 18;
 
 		DYE_PROPERTY()
 		DYE::Float DistanceChangePerPress = 1;
 	};
-
-
 
 	DYE_COMPONENT("Howitzer Aiming Component", DYE::DYEditor::HowitzerAimingComponent)
 	struct HowitzerAimingComponent
@@ -44,5 +44,28 @@ namespace DYE::DYEditor
 
 		DYE_PROPERTY()
 		DYE::Float CurrDistance = 5;
+	};
+
+	DYE_COMPONENT("Projectile Movement Component", DYE::DYEditor::ProjectileMovementComponent)
+	struct ProjectileMovementComponent
+	{
+		DYE_PROPERTY()
+		DYE::Float TravelSpeedPerSecond = 5.0f;
+
+		DYE_PROPERTY()
+		DYE::Float MaxTravelDistance = 50.0f;
+
+		DYE_PROPERTY()
+		DYE::Float TravelledDistance = 0.0f;
+	};
+
+	DYE_COMPONENT("Debug Draw Sphere Component", DYE::DYEditor::DebugDrawSphereComponent)
+	struct DebugDrawSphereComponent
+	{
+		DYE_PROPERTY()
+		DYE::Color4 Color = glm::vec4(1, 1, 1, 1);
+
+		DYE_PROPERTY()
+		DYE::Float Radius = 0.5f;
 	};
 }

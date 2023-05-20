@@ -18,6 +18,8 @@
 #include "include/Systems/TurtleSystems.h"
 #include "include/Components/HowitzerComponents.h"
 #include "include/Systems/HowitzerSystems.h"
+#include "include/Components/KillComponents.h"
+#include "include/Systems/KillSystems.h"
 
 
 namespace DYE::DYEditor
@@ -311,6 +313,157 @@ namespace DYE::DYEditor
 					}
 			);
 
+		// Component located in include/Components/HowitzerComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::ProjectileMovementComponent>
+			(
+				"Projectile Movement Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::ProjectileMovementComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("TravelSpeedPerSecond", component.TravelSpeedPerSecond);
+							serializedComponent.SetPrimitiveTypePropertyValue("MaxTravelDistance", component.MaxTravelDistance);
+							serializedComponent.SetPrimitiveTypePropertyValue("TravelledDistance", component.TravelledDistance);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::ProjectileMovementComponent>();
+							component.TravelSpeedPerSecond = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("TravelSpeedPerSecond", 5.0f);
+							component.MaxTravelDistance = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("MaxTravelDistance", 50.0f);
+							component.TravelledDistance = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("TravelledDistance", 0.0f);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::ProjectileMovementComponent>();
+							changed |= ImGuiUtil::DrawFloatControl("TravelSpeedPerSecond", component.TravelSpeedPerSecond); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("MaxTravelDistance", component.MaxTravelDistance); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("TravelledDistance", component.TravelledDistance); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/HowitzerComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::DebugDrawSphereComponent>
+			(
+				"Debug Draw Sphere Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::DebugDrawSphereComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("Color", component.Color);
+							serializedComponent.SetPrimitiveTypePropertyValue("Radius", component.Radius);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::DebugDrawSphereComponent>();
+							component.Color = serializedComponent.GetPrimitiveTypePropertyValueOr<Color4>("Color", glm::vec4(1, 1, 1, 1));
+							component.Radius = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("Radius", 0.5f);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::DebugDrawSphereComponent>();
+							changed |= ImGuiUtil::DrawColor4Control("Color", component.Color); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("Radius", component.Radius); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/KillComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::KillableComponent>
+			(
+				"Killable Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::KillableComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("MaxHitPoint", component.MaxHitPoint);
+							serializedComponent.SetPrimitiveTypePropertyValue("CurrHitPoint", component.CurrHitPoint);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::KillableComponent>();
+							component.MaxHitPoint = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("MaxHitPoint", 1);
+							component.CurrHitPoint = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("CurrHitPoint", 1);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::KillableComponent>();
+							changed |= ImGuiUtil::DrawIntControl("MaxHitPoint", component.MaxHitPoint); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawIntControl("CurrHitPoint", component.CurrHitPoint); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/KillComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::KilledComponent>
+			(
+				"Killed Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							entity.AddOrGetComponent<DYE::DYEditor::KilledComponent>();
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							ImGui::Indent();
+							ImGui::TextUnformatted("The component doesn't have any properties (i.e. DYE_PROPERTY).");
+							ImGui::Unindent();
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/KillComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::ExplodeOnKilledComponent>
+			(
+				"Explode On Killed Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::ExplodeOnKilledComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("ExplodeRadius", component.ExplodeRadius);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::ExplodeOnKilledComponent>();
+							component.ExplodeRadius = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("ExplodeRadius", 3.5f);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::ExplodeOnKilledComponent>();
+							changed |= ImGuiUtil::DrawFloatControl("ExplodeRadius", component.ExplodeRadius); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
 		// System located in include/Systems/ExampleSystem.h
 		static DYE::DYEditor::Template::ExampleSystem _ExampleSystem;
 		TypeRegistry::RegisterSystem("Example System", &_ExampleSystem);
@@ -338,6 +491,18 @@ namespace DYE::DYEditor
 		// System located in include/Systems/HowitzerSystems.h
 		static DYE::DYEditor::RenderHowitzerAimSystem _RenderHowitzerAimSystem;
 		TypeRegistry::RegisterSystem("Render Howitzer Aim System", &_RenderHowitzerAimSystem);
+
+		// System located in include/Systems/HowitzerSystems.h
+		static DYE::DYEditor::ProjectileTravelSystem _ProjectileTravelSystem;
+		TypeRegistry::RegisterSystem("Projectile Travel System", &_ProjectileTravelSystem);
+
+		// System located in include/Systems/HowitzerSystems.h
+		static DYE::DYEditor::RenderDebugSphereSystem _RenderDebugSphereSystem;
+		TypeRegistry::RegisterSystem("Render Debug Sphere System", &_RenderDebugSphereSystem);
+
+		// System located in include/Systems/KillSystems.h
+		static DYE::DYEditor::DestroyEntityOnKilledSystem _DestroyEntityOnKilledSystem;
+		TypeRegistry::RegisterSystem("Destroy Entity On Killed System", &_DestroyEntityOnKilledSystem);
 
 	}
 

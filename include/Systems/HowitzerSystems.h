@@ -4,6 +4,8 @@
 #include "Core/EditorSystem.h"
 #include "Core/Components.h"
 #include "Components/HowitzerComponents.h"
+#include "Components/KillComponents.h"
+#include "Core/Time.h"
 
 #include "Graphics/DebugDraw.h"
 
@@ -36,12 +38,12 @@ namespace DYE::DYEditor
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
 		{
 			{
-				auto view = world.GetView<HowitzerInputComponent, HowitzerAimingComponent>();
+				auto view = world.GetView<HowitzerInputComponent, HowitzerAimingComponent, TransformComponent>();
 				for (auto entity: view)
 				{
 					auto howitzerInput = view.get<HowitzerInputComponent>(entity);
 					auto &howitzerAiming = view.get<HowitzerAimingComponent>(entity);
-					//auto &childTransform = view.get<TransformComponent>(entity);
+					auto transform = view.get<TransformComponent>(entity);
 
 					if (INPUT.GetKeyDown(howitzerInput.RotateClockwiseButton))
 					{
@@ -69,6 +71,20 @@ namespace DYE::DYEditor
 						{
 							howitzerAiming.CurrDistance = howitzerAiming.MinDistance;
 						}
+					}
+
+					if (INPUT.GetKeyDown(howitzerInput.FireButton))
+					{
+						Entity firedProjectile = world.CreateEntity("Player Projectile");
+						auto &projectileTransform = firedProjectile.AddComponent<TransformComponent>();
+						projectileTransform.Position = transform.Position;
+						projectileTransform.Rotation = transform.Rotation;
+
+						// TODO: adjust parameters here.
+						auto &projectileMovement = firedProjectile.AddComponent<ProjectileMovementComponent>();
+						projectileMovement.MaxTravelDistance = howitzerAiming.CurrDistance;
+
+						auto &projectileSphere = firedProjectile.AddComponent<DebugDrawSphereComponent>();
 					}
 				}
 			}
@@ -131,6 +147,51 @@ namespace DYE::DYEditor
 				float const hitRadius = 3.5f; // FIXME: put this in another component.
 				DebugDraw::Circle(aimPosition, hitRadius, glm::vec3(0, 0, 1), Color::Red);
 				DebugDraw::Circle(aimPosition, 0.25f, glm::vec3(0, 0, 1), Color::Yellow);
+			}
+		}
+	};
+
+	DYE_SYSTEM("Projectile Travel System", DYE::DYEditor::ProjectileTravelSystem)
+	struct ProjectileTravelSystem final : public SystemBase
+	{
+		ExecutionPhase GetPhase() const override { return ExecutionPhase::FixedUpdate; }
+		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
+		{
+			auto view = world.GetView<ProjectileMovementComponent, TransformComponent>();
+			for (auto entity : view)
+			{
+				Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
+
+				auto &projectTileMovement = view.get<ProjectileMovementComponent>(entity);
+				auto &transform = view.get<TransformComponent>(entity);
+
+				// Calculate new travel location.
+				float const travelDistance = (float) TIME.FixedDeltaTime() * projectTileMovement.TravelSpeedPerSecond;
+				transform.Position += transform.GetRight() * travelDistance;
+				projectTileMovement.TravelledDistance += travelDistance;
+
+				if (projectTileMovement.TravelledDistance > projectTileMovement.MaxTravelDistance)
+				{
+					// Reached max distance, kill the projectile entity.
+					wrappedEntity.AddComponent<KilledComponent>();
+				}
+			}
+		}
+	};
+
+	DYE_SYSTEM("Render Debug Sphere System", DYE::DYEditor::RenderDebugSphereSystem)
+	struct RenderDebugSphereSystem final : public SystemBase
+	{
+		ExecutionPhase GetPhase() const override { return ExecutionPhase::Render; }
+		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
+		{
+			auto view = world.GetView<DebugDrawSphereComponent, TransformComponent>();
+			for (auto entity : view)
+			{
+				auto &sphere = view.get<DebugDrawSphereComponent>(entity);
+				auto &transform = view.get<TransformComponent>(entity);
+
+				DebugDraw::Sphere(transform.Position, sphere.Radius, sphere.Color);
 			}
 		}
 	};
