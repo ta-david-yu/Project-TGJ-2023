@@ -8,6 +8,7 @@
 #include "Core/Time.h"
 #include "Math/Math.h"
 #include "Math/EasingFunctions.h"
+#include "ImGui/ImGuiUtil.h"
 
 #include "Graphics/DebugDraw.h"
 
@@ -36,6 +37,8 @@ namespace DYE::DYEditor
 	DYE_SYSTEM("Howitzer Input System", DYE::DYEditor::HowitzerInputSystem)
 	struct HowitzerInputSystem final : public SystemBase
 	{
+		bool UseDebugKeyboardInput = true;
+
 		ExecutionPhase GetPhase() const final { return ExecutionPhase::Update; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
 		{
@@ -47,35 +50,68 @@ namespace DYE::DYEditor
 					auto &howitzerAiming = view.get<HowitzerAimingComponent>(entity);
 					auto transform = view.get<TransformComponent>(entity);
 
-					if (INPUT.GetKeyDown(howitzerInput.RotateClockwiseButton))
+					if (UseDebugKeyboardInput)
 					{
-						howitzerAiming.AngleDegreeRelativeToParent -= howitzerInput.AngleStepDegreePerPress;
-					}
-
-					if (INPUT.GetKeyDown(howitzerInput.RotateAnticlockwiseButton))
-					{
-						howitzerAiming.AngleDegreeRelativeToParent += howitzerInput.AngleStepDegreePerPress;
-					}
-
-					if (INPUT.GetKeyDown(howitzerInput.IncreaseDistanceButton))
-					{
-						howitzerAiming.CurrDistance += howitzerInput.DistanceChangePerPress;
-						if (howitzerAiming.CurrDistance > howitzerAiming.MaxDistance)
+						if (INPUT.GetKeyDown(howitzerInput.RotateClockwiseButton))
 						{
-							howitzerAiming.CurrDistance = howitzerAiming.MaxDistance;
+							howitzerAiming.AngleDegreeRelativeToParent -= howitzerInput.AngleStepDegreePerPress;
+						}
+
+						if (INPUT.GetKeyDown(howitzerInput.RotateAnticlockwiseButton))
+						{
+							howitzerAiming.AngleDegreeRelativeToParent += howitzerInput.AngleStepDegreePerPress;
+						}
+
+						if (INPUT.GetKeyDown(howitzerInput.IncreaseDistanceButton))
+						{
+							howitzerAiming.CurrDistance += howitzerInput.DistanceChangePerPress;
+							if (howitzerAiming.CurrDistance > howitzerAiming.MaxDistance)
+							{
+								howitzerAiming.CurrDistance = howitzerAiming.MaxDistance;
+							}
+						}
+
+						if (INPUT.GetKeyDown(howitzerInput.DecreaseDistanceButton))
+						{
+							howitzerAiming.CurrDistance -= howitzerInput.DistanceChangePerPress;
+							if (howitzerAiming.CurrDistance < howitzerAiming.MinDistance)
+							{
+								howitzerAiming.CurrDistance = howitzerAiming.MinDistance;
+							}
 						}
 					}
-
-					if (INPUT.GetKeyDown(howitzerInput.DecreaseDistanceButton))
+					else
 					{
-						howitzerAiming.CurrDistance -= howitzerInput.DistanceChangePerPress;
-						if (howitzerAiming.CurrDistance < howitzerAiming.MinDistance)
+						// -1 ~ 1: the orientation of howitzer
+						float const x = INPUT.GetGamepadAxis(howitzerInput.ControllerID, GamepadAxis::LeftTrigger);
+						float const y = INPUT.GetGamepadAxis(howitzerInput.ControllerID, GamepadAxis::RightTrigger);
+
+						glm::vec2 const axis = {x * 2 - 1, y * 2 - 1};
+						float const length = glm::length(axis);
+						if (length > 0.0001f)
 						{
-							howitzerAiming.CurrDistance = howitzerAiming.MinDistance;
+							float const angleRadian = glm::atan(axis.x, axis.y);
+							howitzerAiming.AngleDegreeRelativeToParent = glm::degrees(angleRadian);
 						}
+
+						// The distance of the howitzer
+						float distanceT = length;
+						float const minimumLength = 0.1f;
+						if (distanceT < minimumLength)
+						{
+							distanceT = minimumLength;
+						}
+						if (distanceT > 1.0f)
+						{
+							distanceT = 1.0f;
+						}
+						distanceT -= minimumLength;
+						distanceT /= (1.0f - minimumLength);
+						howitzerAiming.CurrDistance = Math::Lerp(howitzerAiming.MinDistance, howitzerAiming.MaxDistance, distanceT);
 					}
 
-					if (INPUT.GetKeyDown(howitzerInput.FireButton))
+					if (INPUT.GetKeyDown(howitzerInput.FireButton) ||
+						INPUT.GetGamepadButton(howitzerInput.ControllerID, howitzerInput.FireGamepadButton))
 					{
 						Entity firedProjectile = world.CreateEntity("Player Projectile");
 						auto &projectileTransform = firedProjectile.AddComponent<TransformComponent>();
@@ -94,6 +130,11 @@ namespace DYE::DYEditor
 					}
 				}
 			}
+		}
+
+		void DrawInspector(DYE::DYEditor::World &world) override
+		{
+			ImGuiUtil::DrawBoolControl("Debug Keyboard Input", UseDebugKeyboardInput);
 		}
 	};
 

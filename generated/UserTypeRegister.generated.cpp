@@ -254,6 +254,7 @@ namespace DYE::DYEditor
 						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
 						{
 							auto const& component = entity.GetComponent<DYE::DYEditor::HowitzerInputComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("ControllerID", component.ControllerID);
 							serializedComponent.SetPrimitiveTypePropertyValue("AngleStepDegreePerPress", component.AngleStepDegreePerPress);
 							serializedComponent.SetPrimitiveTypePropertyValue("DistanceChangePerPress", component.DistanceChangePerPress);
 							return SerializationResult {};
@@ -261,6 +262,7 @@ namespace DYE::DYEditor
 						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
 						{
 							auto& component = entity.AddOrGetComponent<DYE::DYEditor::HowitzerInputComponent>();
+							component.ControllerID = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("ControllerID", 0);
 							component.AngleStepDegreePerPress = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("AngleStepDegreePerPress", 18);
 							component.DistanceChangePerPress = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("DistanceChangePerPress", 1);
 							return DeserializationResult {};
@@ -269,6 +271,7 @@ namespace DYE::DYEditor
 						{
 							bool changed = false;
 							auto& component = entity.GetComponent<DYE::DYEditor::HowitzerInputComponent>();
+							changed |= ImGuiUtil::DrawIntControl("ControllerID", component.ControllerID); updateContextAfterDrawControlCall(drawInspectorContext);
 							changed |= ImGuiUtil::DrawFloatControl("AngleStepDegreePerPress", component.AngleStepDegreePerPress); updateContextAfterDrawControlCall(drawInspectorContext);
 							changed |= ImGuiUtil::DrawFloatControl("DistanceChangePerPress", component.DistanceChangePerPress); updateContextAfterDrawControlCall(drawInspectorContext);
 							return changed;

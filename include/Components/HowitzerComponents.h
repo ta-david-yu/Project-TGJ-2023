@@ -23,6 +23,11 @@ namespace DYE::DYEditor
 
 		KeyCode FireButton = KeyCode::Space;
 
+		GamepadButton FireGamepadButton = GamepadButton::A;
+
+		DYE_PROPERTY()
+		DYE::Int32 ControllerID = 0;
+
 		DYE_PROPERTY()
 		DYE::Float AngleStepDegreePerPress = 18;
 
