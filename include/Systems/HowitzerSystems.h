@@ -37,7 +37,7 @@ namespace DYE::DYEditor
 	DYE_SYSTEM("Howitzer Input System", DYE::DYEditor::HowitzerInputSystem)
 	struct HowitzerInputSystem final : public SystemBase
 	{
-		bool UseDebugKeyboardInput = true;
+		bool UseDebugKeyboardInput = false;
 
 		ExecutionPhase GetPhase() const final { return ExecutionPhase::Update; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
@@ -94,6 +94,7 @@ namespace DYE::DYEditor
 							howitzerAiming.AngleDegreeRelativeToParent = glm::degrees(angleRadian);
 						}
 
+						/*
 						// The distance of the howitzer
 						float distanceT = length;
 						float const minimumLength = 0.1f;
@@ -107,7 +108,25 @@ namespace DYE::DYEditor
 						}
 						distanceT -= minimumLength;
 						distanceT /= (1.0f - minimumLength);
-						howitzerAiming.CurrDistance = Math::Lerp(howitzerAiming.MinDistance, howitzerAiming.MaxDistance, distanceT);
+						howitzerAiming.CurrDistance = Math::Lerp(howitzerAiming.MinDistance, howitzerAiming.MaxDistance, distanceT);*/
+
+						if (INPUT.GetKeyDown(howitzerInput.IncreaseDistanceButton))
+						{
+							howitzerAiming.CurrDistance += howitzerInput.DistanceChangePerPress;
+							if (howitzerAiming.CurrDistance > howitzerAiming.MaxDistance)
+							{
+								howitzerAiming.CurrDistance = howitzerAiming.MaxDistance;
+							}
+						}
+
+						if (INPUT.GetKeyDown(howitzerInput.DecreaseDistanceButton))
+						{
+							howitzerAiming.CurrDistance -= howitzerInput.DistanceChangePerPress;
+							if (howitzerAiming.CurrDistance < howitzerAiming.MinDistance)
+							{
+								howitzerAiming.CurrDistance = howitzerAiming.MinDistance;
+							}
+						}
 					}
 
 					if (INPUT.GetKeyDown(howitzerInput.FireButton) ||
