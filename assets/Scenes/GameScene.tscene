@@ -1,0 +1,448 @@
+Name = 'GameScene'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    ClearColor = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Depth = -1.0
+    FarClipDistance = 100.0
+    FiledOfView = 45.0
+    IsEnabled = true
+    IsOrthographic = true
+    ManualAspectRatio = 1.0
+    NearClipDistance = 0.10000000149011612
+    OrthographicSize = 30.0
+    TargetWindowIndex = 0
+    Type = 'Camera'
+    UseManualAspectRatio = false
+    Viewport = { Height = 1.0, Width = 1.0, X = 0.0, Y = 0.0 }
+    ViewportValueType = 'RelativeDimension'
+
+    [[Entities.Components]]
+    ID = '14823154286683154705'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    Name = 'Camera'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Position = { x = 0.0, y = 0.0, z = 10.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    Children = [ '5198063861872375419' ]
+    Type = 'Children'
+
+    [[Entities.Components]]
+    ID = '3639401939517471300'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    CurrHitPoint = 1
+    MaxHitPoint = 1
+    TeamID = 0
+    Type = 'Killable Component'
+
+    [[Entities.Components]]
+    Name = 'Turtle'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Color = { w = 1.0, x = 1.0, y = 1.0, z = 1.0 }
+    IsEnabled = true
+    TextureAssetPath = ''
+    Type = 'Sprite Renderer'
+
+    [[Entities.Components]]
+    FullSpeedPerSecond = 3.0
+    InputBuffer = 0.0
+    Type = 'Tank Movement Component'
+
+    [[Entities.Components]]
+    AngleInRadian = 1.7442066669464111
+    Type = 'Tank Rotation Component'
+
+    [[Entities.Components]]
+    Position = { x = 1.5080525875091553, y = -1.3427181243896484, z = 0.0 }
+    Rotation = { w = 0.64321750402450562, x = 0.0, y = 0.0, z = 0.76568353176116943 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+    [[Entities.Components]]
+    ControllerID = 0
+    Type = 'Turtle Input Component'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    PositionOffset = { x = 0.0, y = 0.0, z = 1.0 }
+    Type = 'Follow Parent Position Component'
+
+    [[Entities.Components]]
+    AngleDegreeRelativeToParent = -1401.0
+    CurrDistance = 6.0
+    MaxDistance = 15.0
+    MinDistance = 5.0
+    Type = 'Howitzer Aiming Component'
+
+    [[Entities.Components]]
+    AngleStepDegreePerPress = 18.0
+    DistanceChangePerPress = 1.0
+    Type = 'Howitzer Input Component'
+
+    [[Entities.Components]]
+    ID = '5198063861872375419'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    Name = 'Howitzer'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    ParentGUID = '3639401939517471300'
+    Type = 'Parent'
+
+    [[Entities.Components]]
+    Color = { w = 1.0, x = 1.0, y = 0.0, z = 0.0 }
+    IsEnabled = true
+    TextureAssetPath = ''
+    Type = 'Sprite Renderer'
+
+    [[Entities.Components]]
+    Position = { x = 1.5080525875091553, y = -1.3427181243896484, z = 1.0 }
+    Rotation = { w = 0.35073298215866089, x = 0.0, y = 0.0, z = 0.93647551536560059 }
+    Scale = { x = 2.0, y = 0.30000001192092896, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    Radius = 1.3999999761581421
+    Type = 'Circle Collider Component'
+
+    [[Entities.Components]]
+    Color = { w = 1.0, x = 0.0, y = 1.0, z = 0.0 }
+    Type = 'Draw Circle Collider Component'
+
+    [[Entities.Components]]
+    ID = '9299782613325544993'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    CurrHitPoint = 1
+    MaxHitPoint = 1
+    TeamID = 1
+    Type = 'Killable Component'
+
+    [[Entities.Components]]
+    Name = 'Enemy Target'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Position = { x = 6.9719901084899902, y = 5.6751828193664551, z = 0.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    Radius = 1.3999999761581421
+    Type = 'Circle Collider Component'
+
+    [[Entities.Components]]
+    Color = { w = 1.0, x = 0.0, y = 1.0, z = 0.0 }
+    Type = 'Draw Circle Collider Component'
+
+    [[Entities.Components]]
+    ID = '17560559532058904424'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    CurrHitPoint = 1
+    MaxHitPoint = 1
+    TeamID = 1
+    Type = 'Killable Component'
+
+    [[Entities.Components]]
+    Name = 'Enemy Target(D)'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Position = { x = 8.1749382019042969, y = 1.5985236167907715, z = 0.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    Radius = 1.3999999761581421
+    Type = 'Circle Collider Component'
+
+    [[Entities.Components]]
+    Color = { w = 1.0, x = 0.0, y = 1.0, z = 0.0 }
+    Type = 'Draw Circle Collider Component'
+
+    [[Entities.Components]]
+    ID = '5327897829746870607'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    CurrHitPoint = 1
+    MaxHitPoint = 1
+    TeamID = 1
+    Type = 'Killable Component'
+
+    [[Entities.Components]]
+    Name = 'Enemy Target(D)(D)'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Position = { x = 3.7474193572998047, y = -1.6093398332595825, z = 0.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    Radius = 1.3999999761581421
+    Type = 'Circle Collider Component'
+
+    [[Entities.Components]]
+    Color = { w = 1.0, x = 0.0, y = 1.0, z = 0.0 }
+    Type = 'Draw Circle Collider Component'
+
+    [[Entities.Components]]
+    ID = '4047791990051652532'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    CurrHitPoint = 1
+    MaxHitPoint = 1
+    TeamID = 1
+    Type = 'Killable Component'
+
+    [[Entities.Components]]
+    Name = 'Enemy Target(D)(D)(D)'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Position = { x = 6.5036835670471191, y = -6.2845239639282227, z = 0.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    Radius = 1.3999999761581421
+    Type = 'Circle Collider Component'
+
+    [[Entities.Components]]
+    Color = { w = 1.0, x = 0.0, y = 1.0, z = 0.0 }
+    Type = 'Draw Circle Collider Component'
+
+    [[Entities.Components]]
+    ID = '11992257869796417809'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    CurrHitPoint = 1
+    MaxHitPoint = 1
+    TeamID = 1
+    Type = 'Killable Component'
+
+    [[Entities.Components]]
+    Name = 'Enemy Target(D)(D)(D)(D)'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Position = { x = 9.7484016418457031, y = -2.2024605274200439, z = 0.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    Radius = 1.3999999761581421
+    Type = 'Circle Collider Component'
+
+    [[Entities.Components]]
+    Color = { w = 1.0, x = 0.0, y = 1.0, z = 0.0 }
+    Type = 'Draw Circle Collider Component'
+
+    [[Entities.Components]]
+    ID = '3227428701996943499'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    CurrHitPoint = 1
+    MaxHitPoint = 1
+    TeamID = 1
+    Type = 'Killable Component'
+
+    [[Entities.Components]]
+    Name = 'Enemy Target(D)(D)(D)(D)(D)'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Position = { x = -4.0329256057739258, y = -6.8776445388793945, z = 0.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    Radius = 1.3999999761581421
+    Type = 'Circle Collider Component'
+
+    [[Entities.Components]]
+    Color = { w = 1.0, x = 0.0, y = 1.0, z = 0.0 }
+    Type = 'Draw Circle Collider Component'
+
+    [[Entities.Components]]
+    ID = '14006474846780185469'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    CurrHitPoint = 1
+    MaxHitPoint = 1
+    TeamID = 1
+    Type = 'Killable Component'
+
+    [[Entities.Components]]
+    Name = 'Enemy Target(D)(D)(D)(D)(D)(D)'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Position = { x = -9.3710088729858398, y = -2.7258014678955078, z = 0.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    Radius = 1.3999999761581421
+    Type = 'Circle Collider Component'
+
+    [[Entities.Components]]
+    Color = { w = 1.0, x = 0.0, y = 1.0, z = 0.0 }
+    Type = 'Draw Circle Collider Component'
+
+    [[Entities.Components]]
+    ID = '4073958799500788430'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    CurrHitPoint = 1
+    MaxHitPoint = 1
+    TeamID = 1
+    Type = 'Killable Component'
+
+    [[Entities.Components]]
+    Name = 'Enemy Target(D)(D)(D)(D)(D)(D)(D)'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Position = { x = -9.3710088729858398, y = -2.7258014678955078, z = 0.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Play Audio Source On Initialize System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Create Window On Initialize System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Turtle Movement System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Follow Parent Position System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Rotate Howitzer System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Projectile Travel System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Turtle Input System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Howitzer Input System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Game Effect On Killed System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Explode Animation System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Register Camera System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Render 2D Sprite System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Render Howitzer Aim System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Render Debug Sphere System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Draw Circle Collider Component'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Destroy Entity On Killed System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Audio System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Modify Window System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Execute Load Scene Command System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Close Window On TearDown System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Lerp Rotation To Angle System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Rotate Transform To Axis Direction System'
