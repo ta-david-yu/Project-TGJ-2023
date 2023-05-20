@@ -27,7 +27,8 @@ endif ()
 
 # !!! Include your source files here !!!
 set(SOURCE_FILES
-        src/CreateApplication.cpp)
+        src/CreateApplication.cpp
+        src/InputEventBufferLayer.cpp)
 
 # !!! Include your header files here !!!
 set(HEADER_FILES
@@ -39,7 +40,7 @@ set(HEADER_FILES
         include/Systems/HowitzerSystems.h
         include/Components/KillComponents.h
         include/Systems/KillSystems.h
-        )
+        include/InputEventBuffingLayer.h)
 
 set(INCLUDE_DIRS
         include

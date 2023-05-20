@@ -10,6 +10,8 @@
 #include "Math/EasingFunctions.h"
 #include "ImGui/ImGuiUtil.h"
 
+#include "InputEventBuffingLayer.h"
+
 #include "Graphics/DebugDraw.h"
 
 namespace DYE::DYEditor
@@ -62,7 +64,7 @@ namespace DYE::DYEditor
 							howitzerAiming.AngleDegreeRelativeToParent += howitzerInput.AngleStepDegreePerPress;
 						}
 
-						if (INPUT.GetKey(howitzerInput.IncreaseDistanceButton))
+						if (INPUT.GetKeyDown(howitzerInput.IncreaseDistanceButton))
 						{
 							howitzerAiming.CurrDistance += howitzerInput.DistanceChangePerPress;
 							if (howitzerAiming.CurrDistance > howitzerAiming.MaxDistance)
@@ -71,7 +73,7 @@ namespace DYE::DYEditor
 							}
 						}
 
-						if (INPUT.GetKey(howitzerInput.DecreaseDistanceButton))
+						if (INPUT.GetKeyDown(howitzerInput.DecreaseDistanceButton))
 						{
 							howitzerAiming.CurrDistance -= howitzerInput.DistanceChangePerPress;
 							if (howitzerAiming.CurrDistance < howitzerAiming.MinDistance)
@@ -110,7 +112,7 @@ namespace DYE::DYEditor
 						distanceT /= (1.0f - minimumLength);
 						howitzerAiming.CurrDistance = Math::Lerp(howitzerAiming.MinDistance, howitzerAiming.MaxDistance, distanceT);*/
 
-						if (INPUT.GetKey(howitzerInput.IncreaseDistanceButton))
+						if (InputEventBuffingLayer::IsIncreaseDistancePressed())
 						{
 							howitzerAiming.CurrDistance += howitzerInput.DistanceChangePerPress;
 							if (howitzerAiming.CurrDistance > howitzerAiming.MaxDistance)
@@ -119,7 +121,7 @@ namespace DYE::DYEditor
 							}
 						}
 
-						if (INPUT.GetKey(howitzerInput.DecreaseDistanceButton))
+						if (InputEventBuffingLayer::IsDecreaseDistancePressed())
 						{
 							howitzerAiming.CurrDistance -= howitzerInput.DistanceChangePerPress;
 							if (howitzerAiming.CurrDistance < howitzerAiming.MinDistance)

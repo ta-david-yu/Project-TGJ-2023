@@ -3,6 +3,10 @@
 #include "DYEditorApplication.h"
 #include "Configuration/ProjectConfig.h"
 
+#include "InputEventBuffingLayer.h"
+
+#include <memory>
+
 namespace DYE
 {
 	Application * CreateApplication()
@@ -12,15 +16,20 @@ namespace DYE
 		auto mainWindowWidth = runtimeConfig.GetOrDefault<int>(DYEditor::RuntimeConfigKeys::MainWindowWidth, 1600);
 		auto mainWindowHeight = runtimeConfig.GetOrDefault<int>(DYEditor::RuntimeConfigKeys::MainWindowHeight, 900);
 
-		return new DYEditor::DYEditorApplication
-			{
-				WindowProperties
-					{
-						projectName,
-						(std::uint32_t) mainWindowWidth,
-						(std::uint32_t) mainWindowHeight
-					},
-				60
-			};
+		auto *app =  new DYEditor::DYEditorApplication
+		{
+			WindowProperties
+				{
+					projectName,
+					(std::uint32_t) mainWindowWidth,
+					(std::uint32_t) mainWindowHeight
+				},
+			60
+		};
+
+		std::shared_ptr<DYEditor::InputEventBuffingLayer> inputEventBufferLayer = std::make_shared<DYEditor::InputEventBuffingLayer>();
+		app->PushLayer(inputEventBufferLayer);
+
+		return app;
 	}
 }
