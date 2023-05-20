@@ -43,7 +43,11 @@ namespace DYE::DYEditor
 						}
 
 						Entity wrappedKillableEntity = world.WrapIdentifierIntoEntity(killableEntity);
-						wrappedKillableEntity.AddComponent<KilledComponent>();
+
+						if (!wrappedKillableEntity.HasComponent<KilledComponent>())
+						{
+							wrappedKillableEntity.AddComponent<KilledComponent>();
+						}
 					}
 
 					// Play explosion animation effect.

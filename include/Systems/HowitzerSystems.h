@@ -252,7 +252,7 @@ namespace DYE::DYEditor
 				if (reachEnd)
 				{
 					// Reached max distance, kill the projectile entity.
-					wrappedEntity.AddComponent<KilledComponent>();
+					wrappedEntity.AddOrGetComponent<KilledComponent>();
 				}
 			}
 		}
