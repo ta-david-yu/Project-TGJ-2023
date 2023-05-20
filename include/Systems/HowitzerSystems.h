@@ -235,11 +235,21 @@ namespace DYE::DYEditor
 				auto &transform = view.get<TransformComponent>(entity);
 
 				// Calculate new travel location.
-				float const travelDistance = (float) TIME.FixedDeltaTime() * projectTileMovement.TravelSpeedPerSecond;
+				bool const reachEnd = false;
+
+				float travelDistance = (float) TIME.FixedDeltaTime() * projectTileMovement.TravelSpeedPerSecond;
+				float newTravelledDistance = projectTileMovement + travelDistance;
+				if (newTravelledDistance > projectTileMovement.MaxTravelDistance)
+				{
+					newTravelledDistance = projectTileMovement.MaxTravelDistance;
+					reachEnd = true;
+				}
+				travelDistance = newTravelledDistance - projectTileMovement.TravelledDistance;
+
 				transform.Position += transform.GetRight() * travelDistance;
 				projectTileMovement.TravelledDistance += travelDistance;
 
-				if (projectTileMovement.TravelledDistance > projectTileMovement.MaxTravelDistance)
+				if (reachEnd)
 				{
 					// Reached max distance, kill the projectile entity.
 					wrappedEntity.AddComponent<KilledComponent>();

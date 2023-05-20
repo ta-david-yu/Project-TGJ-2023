@@ -40,7 +40,8 @@ set(HEADER_FILES
         include/Systems/HowitzerSystems.h
         include/Components/KillComponents.h
         include/Systems/KillSystems.h
-        include/InputEventBuffingLayer.h)
+        include/InputEventBuffingLayer.h
+        include/Systems/UISystems.h)
 
 set(INCLUDE_DIRS
         include

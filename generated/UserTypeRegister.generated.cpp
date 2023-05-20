@@ -20,6 +20,7 @@
 #include "include/Systems/HowitzerSystems.h"
 #include "include/Components/KillComponents.h"
 #include "include/Systems/KillSystems.h"
+#include "include/Systems/UISystems.h"
 
 
 namespace DYE::DYEditor
@@ -709,6 +710,10 @@ namespace DYE::DYEditor
 		// System located in include/Systems/KillSystems.h
 		static DYE::DYEditor::DrawCircleColliderSystem _DrawCircleColliderSystem;
 		TypeRegistry::RegisterSystem("Draw Circle Collider Component", &_DrawCircleColliderSystem);
+
+		// System located in include/Systems/UISystems.h
+		static DYE::DYEditor::TeamPointsUISystem _TeamPointsUISystem;
+		TypeRegistry::RegisterSystem("Team Points UI System", &_TeamPointsUISystem);
 
 	}
 
