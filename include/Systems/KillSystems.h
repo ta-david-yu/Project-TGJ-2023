@@ -54,9 +54,26 @@ namespace DYE::DYEditor
 					explodeAnimation.StartRadius = explodeRadius * 0.3f;
 					explodeAnimation.EndRadius = explodeRadius + 0.75f;
 					explodeAnimation.AnimationTime = 1.0f;
+				}
+			}
 
-					Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
-					world.DestroyEntityAndChildren(wrappedEntity);
+			// Add points on killed.
+			{
+				auto teamPointView = world.GetView<TeamPointsComponent>();
+
+				auto view = world.GetView<KilledComponent, AddPointsToTeamOnKilledComponent>();
+				for (auto entity: view)
+				{
+					auto &addPointsToTeam = view.get<AddPointsToTeamOnKilledComponent>(entity);
+
+					// Check if there is any team with the given id
+					for (auto [teamEntity, teamPoints] : teamPointView.each())
+					{
+						if (teamPoints.TeamID == addPointsToTeam.TeamIDToAddTo)
+						{
+							teamPoints.Points += addPointsToTeam.Points;
+						}
+					}
 				}
 			}
 		}

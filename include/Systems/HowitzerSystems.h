@@ -62,7 +62,7 @@ namespace DYE::DYEditor
 							howitzerAiming.AngleDegreeRelativeToParent += howitzerInput.AngleStepDegreePerPress;
 						}
 
-						if (INPUT.GetKeyDown(howitzerInput.IncreaseDistanceButton))
+						if (INPUT.GetKey(howitzerInput.IncreaseDistanceButton))
 						{
 							howitzerAiming.CurrDistance += howitzerInput.DistanceChangePerPress;
 							if (howitzerAiming.CurrDistance > howitzerAiming.MaxDistance)
@@ -71,7 +71,7 @@ namespace DYE::DYEditor
 							}
 						}
 
-						if (INPUT.GetKeyDown(howitzerInput.DecreaseDistanceButton))
+						if (INPUT.GetKey(howitzerInput.DecreaseDistanceButton))
 						{
 							howitzerAiming.CurrDistance -= howitzerInput.DistanceChangePerPress;
 							if (howitzerAiming.CurrDistance < howitzerAiming.MinDistance)
@@ -110,7 +110,7 @@ namespace DYE::DYEditor
 						distanceT /= (1.0f - minimumLength);
 						howitzerAiming.CurrDistance = Math::Lerp(howitzerAiming.MinDistance, howitzerAiming.MaxDistance, distanceT);*/
 
-						if (INPUT.GetKeyDown(howitzerInput.IncreaseDistanceButton))
+						if (INPUT.GetKey(howitzerInput.IncreaseDistanceButton))
 						{
 							howitzerAiming.CurrDistance += howitzerInput.DistanceChangePerPress;
 							if (howitzerAiming.CurrDistance > howitzerAiming.MaxDistance)
@@ -119,7 +119,7 @@ namespace DYE::DYEditor
 							}
 						}
 
-						if (INPUT.GetKeyDown(howitzerInput.DecreaseDistanceButton))
+						if (INPUT.GetKey(howitzerInput.DecreaseDistanceButton))
 						{
 							howitzerAiming.CurrDistance -= howitzerInput.DistanceChangePerPress;
 							if (howitzerAiming.CurrDistance < howitzerAiming.MinDistance)
