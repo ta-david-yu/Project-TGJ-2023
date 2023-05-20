@@ -235,10 +235,10 @@ namespace DYE::DYEditor
 				auto &transform = view.get<TransformComponent>(entity);
 
 				// Calculate new travel location.
-				bool const reachEnd = false;
+				bool reachEnd = false;
 
 				float travelDistance = (float) TIME.FixedDeltaTime() * projectTileMovement.TravelSpeedPerSecond;
-				float newTravelledDistance = projectTileMovement + travelDistance;
+				float newTravelledDistance = projectTileMovement.TravelledDistance + travelDistance;
 				if (newTravelledDistance > projectTileMovement.MaxTravelDistance)
 				{
 					newTravelledDistance = projectTileMovement.MaxTravelDistance;
