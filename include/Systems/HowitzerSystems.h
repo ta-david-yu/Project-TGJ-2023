@@ -131,7 +131,8 @@ namespace DYE::DYEditor
 						}
 					}
 
-					if (INPUT.GetKeyDown(howitzerInput.FireButton) ||
+					if (InputEventBuffingLayer::IsFirePressed() ||
+						INPUT.GetKeyDown(howitzerInput.FireButton) ||
 						INPUT.GetGamepadButton(howitzerInput.ControllerID, howitzerInput.FireGamepadButton))
 					{
 						Entity firedProjectile = world.CreateEntity("Player Projectile");
