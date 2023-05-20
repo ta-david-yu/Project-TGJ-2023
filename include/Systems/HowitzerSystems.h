@@ -148,7 +148,7 @@ namespace DYE::DYEditor
 						explodeOnKilled.TeamIDToKill = ENEMY_TEAM;
 						explodeOnKilled.ExplodeRadius = 3.5f;
 
-						auto &projectileSphere = firedProjectile.AddComponent<DebugDrawSphereComponent>();
+						firedProjectile.AddComponent<DrawTriangleOnTransformComponent>();
 					}
 				}
 			}
@@ -271,6 +271,29 @@ namespace DYE::DYEditor
 				auto &transform = view.get<TransformComponent>(entity);
 
 				DebugDraw::Circle(transform.Position, sphere.Radius, glm::vec3 (0, 0, 1), sphere.Color);
+			}
+		}
+	};
+
+	DYE_SYSTEM("Render Triangle System", DYE::DYEditor::RenderTriangleSystem)
+	struct RenderTriangleSystem final : public SystemBase
+	{
+		ExecutionPhase GetPhase() const override { return ExecutionPhase::Render; }
+		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
+		{
+			auto view = world.GetView<DrawTriangleOnTransformComponent, TransformComponent>();
+			for (auto entity : view)
+			{
+				auto &triangle = view.get<DrawTriangleOnTransformComponent>(entity);
+				auto &transform = view.get<TransformComponent>(entity);
+
+				auto const forward = transform.Position + transform.GetRight() * 0.4f;
+				auto const right = transform.Position + transform.GetRight() * -0.4f + transform.GetForward() * 0.2f;
+				auto const left = transform.Position + transform.GetRight() * -0.4f + transform.GetForward() * -0.2f;
+
+				DebugDraw::Line(forward, right, triangle.Color);
+				DebugDraw::Line(right, left, triangle.Color);
+				DebugDraw::Line(left, forward, triangle.Color);
 			}
 		}
 	};

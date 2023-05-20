@@ -73,4 +73,11 @@ namespace DYE::DYEditor
 		DYE_PROPERTY()
 		DYE::Float Radius = 0.5f;
 	};
+
+	DYE_COMPONENT("Draw Triangle On Transform", DYE::DYEditor::DrawTriangleOnTransformComponent)
+	struct DrawTriangleOnTransformComponent
+	{
+		DYE_PROPERTY()
+		DYE::Color4 Color = glm::vec4(1, 1, 1, 1);
+	};
 }

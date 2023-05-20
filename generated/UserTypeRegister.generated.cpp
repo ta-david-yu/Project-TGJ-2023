@@ -382,6 +382,34 @@ namespace DYE::DYEditor
 					}
 			);
 
+		// Component located in include/Components/HowitzerComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::DrawTriangleOnTransformComponent>
+			(
+				"Draw Triangle On Transform",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::DrawTriangleOnTransformComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("Color", component.Color);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::DrawTriangleOnTransformComponent>();
+							component.Color = serializedComponent.GetPrimitiveTypePropertyValueOr<Color4>("Color", glm::vec4(1, 1, 1, 1));
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::DrawTriangleOnTransformComponent>();
+							changed |= ImGuiUtil::DrawColor4Control("Color", component.Color); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
 		// Component located in include/Components/KillComponents.h
 		TypeRegistry::RegisterComponentType<DYE::DYEditor::KillableComponent>
 			(
@@ -694,6 +722,10 @@ namespace DYE::DYEditor
 		// System located in include/Systems/HowitzerSystems.h
 		static DYE::DYEditor::RenderDebugSphereSystem _RenderDebugSphereSystem;
 		TypeRegistry::RegisterSystem("Render Debug Sphere System", &_RenderDebugSphereSystem);
+
+		// System located in include/Systems/HowitzerSystems.h
+		static DYE::DYEditor::RenderTriangleSystem _RenderTriangleSystem;
+		TypeRegistry::RegisterSystem("Render Triangle System", &_RenderTriangleSystem);
 
 		// System located in include/Systems/KillSystems.h
 		static DYE::DYEditor::GameEffectOnKilledSystem _GameEffectOnKilledSystem;
