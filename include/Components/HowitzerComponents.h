@@ -50,7 +50,7 @@ namespace DYE::DYEditor
 	struct ProjectileMovementComponent
 	{
 		DYE_PROPERTY()
-		DYE::Float TravelSpeedPerSecond = 5.0f;
+		DYE::Float TravelSpeedPerSecond = 10.0f;
 
 		DYE_PROPERTY()
 		DYE::Float MaxTravelDistance = 50.0f;

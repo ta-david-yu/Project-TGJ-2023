@@ -38,7 +38,8 @@ set(HEADER_FILES
         include/Components/HowitzerComponents.h
         include/Systems/HowitzerSystems.h
         include/Components/KillComponents.h
-        include/Systems/KillSystems.h)
+        include/Systems/KillSystems.h
+        )
 
 set(INCLUDE_DIRS
         include

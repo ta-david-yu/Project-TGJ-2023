@@ -330,7 +330,7 @@ namespace DYE::DYEditor
 						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
 						{
 							auto& component = entity.AddOrGetComponent<DYE::DYEditor::ProjectileMovementComponent>();
-							component.TravelSpeedPerSecond = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("TravelSpeedPerSecond", 5.0f);
+							component.TravelSpeedPerSecond = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("TravelSpeedPerSecond", 10.0f);
 							component.MaxTravelDistance = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("MaxTravelDistance", 50.0f);
 							component.TravelledDistance = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("TravelledDistance", 0.0f);
 							return DeserializationResult {};
@@ -464,6 +464,46 @@ namespace DYE::DYEditor
 					}
 			);
 
+		// Component located in include/Components/KillComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::ExplodeAnimationComponent>
+			(
+				"Explode Animation Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::ExplodeAnimationComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("StartRadius", component.StartRadius);
+							serializedComponent.SetPrimitiveTypePropertyValue("EndRadius", component.EndRadius);
+							serializedComponent.SetPrimitiveTypePropertyValue("StartColor", component.StartColor);
+							serializedComponent.SetPrimitiveTypePropertyValue("EndColor", component.EndColor);
+							serializedComponent.SetPrimitiveTypePropertyValue("AnimationTime", component.AnimationTime);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::ExplodeAnimationComponent>();
+							component.StartRadius = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("StartRadius", 3.5f);
+							component.EndRadius = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("EndRadius", 4.0f);
+							component.StartColor = serializedComponent.GetPrimitiveTypePropertyValueOr<Color4>("StartColor", Color::White);
+							component.EndColor = serializedComponent.GetPrimitiveTypePropertyValueOr<Color4>("EndColor", glm::vec4(1, 1, 1, 0));
+							component.AnimationTime = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("AnimationTime", 0.5f);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::ExplodeAnimationComponent>();
+							changed |= ImGuiUtil::DrawFloatControl("StartRadius", component.StartRadius); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("EndRadius", component.EndRadius); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawColor4Control("StartColor", component.StartColor); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawColor4Control("EndColor", component.EndColor); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("AnimationTime", component.AnimationTime); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
 		// System located in include/Systems/ExampleSystem.h
 		static DYE::DYEditor::Template::ExampleSystem _ExampleSystem;
 		TypeRegistry::RegisterSystem("Example System", &_ExampleSystem);
@@ -503,6 +543,10 @@ namespace DYE::DYEditor
 		// System located in include/Systems/KillSystems.h
 		static DYE::DYEditor::DestroyEntityOnKilledSystem _DestroyEntityOnKilledSystem;
 		TypeRegistry::RegisterSystem("Destroy Entity On Killed System", &_DestroyEntityOnKilledSystem);
+
+		// System located in include/Systems/KillSystems.h
+		static DYE::DYEditor::ExplodeAnimationSystem _ExplodeAnimationSystem;
+		TypeRegistry::RegisterSystem("Explode Animation System", &_ExplodeAnimationSystem);
 
 	}
 

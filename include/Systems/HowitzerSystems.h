@@ -6,6 +6,8 @@
 #include "Components/HowitzerComponents.h"
 #include "Components/KillComponents.h"
 #include "Core/Time.h"
+#include "Math/Math.h"
+#include "Math/EasingFunctions.h"
 
 #include "Graphics/DebugDraw.h"
 
@@ -83,6 +85,9 @@ namespace DYE::DYEditor
 						// TODO: adjust parameters here.
 						auto &projectileMovement = firedProjectile.AddComponent<ProjectileMovementComponent>();
 						projectileMovement.MaxTravelDistance = howitzerAiming.CurrDistance;
+
+						auto &explodeOnKilled = firedProjectile.AddComponent<ExplodeOnKilledComponent>();
+						explodeOnKilled.ExplodeRadius = 3.5f;
 
 						auto &projectileSphere = firedProjectile.AddComponent<DebugDrawSphereComponent>();
 					}
