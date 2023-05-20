@@ -87,6 +87,7 @@ namespace DYE::DYEditor
 						projectileMovement.MaxTravelDistance = howitzerAiming.CurrDistance;
 
 						auto &explodeOnKilled = firedProjectile.AddComponent<ExplodeOnKilledComponent>();
+						explodeOnKilled.TeamIDToKill = ENEMY_TEAM;
 						explodeOnKilled.ExplodeRadius = 3.5f;
 
 						auto &projectileSphere = firedProjectile.AddComponent<DebugDrawSphereComponent>();
@@ -196,7 +197,7 @@ namespace DYE::DYEditor
 				auto &sphere = view.get<DebugDrawSphereComponent>(entity);
 				auto &transform = view.get<TransformComponent>(entity);
 
-				DebugDraw::Sphere(transform.Position, sphere.Radius, sphere.Color);
+				DebugDraw::Circle(transform.Position, sphere.Radius, glm::vec3 (0, 0, 1), sphere.Color);
 			}
 		}
 	};

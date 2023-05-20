@@ -387,6 +387,7 @@ namespace DYE::DYEditor
 						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
 						{
 							auto const& component = entity.GetComponent<DYE::DYEditor::KillableComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("TeamID", component.TeamID);
 							serializedComponent.SetPrimitiveTypePropertyValue("MaxHitPoint", component.MaxHitPoint);
 							serializedComponent.SetPrimitiveTypePropertyValue("CurrHitPoint", component.CurrHitPoint);
 							return SerializationResult {};
@@ -394,6 +395,7 @@ namespace DYE::DYEditor
 						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
 						{
 							auto& component = entity.AddOrGetComponent<DYE::DYEditor::KillableComponent>();
+							component.TeamID = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("TeamID", PLAYER_TEAM);
 							component.MaxHitPoint = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("MaxHitPoint", 1);
 							component.CurrHitPoint = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("CurrHitPoint", 1);
 							return DeserializationResult {};
@@ -402,8 +404,65 @@ namespace DYE::DYEditor
 						{
 							bool changed = false;
 							auto& component = entity.GetComponent<DYE::DYEditor::KillableComponent>();
+							changed |= ImGuiUtil::DrawIntControl("TeamID", component.TeamID); updateContextAfterDrawControlCall(drawInspectorContext);
 							changed |= ImGuiUtil::DrawIntControl("MaxHitPoint", component.MaxHitPoint); updateContextAfterDrawControlCall(drawInspectorContext);
 							changed |= ImGuiUtil::DrawIntControl("CurrHitPoint", component.CurrHitPoint); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/KillComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::CircleColliderComponent>
+			(
+				"Circle Collider Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::CircleColliderComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("Radius", component.Radius);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::CircleColliderComponent>();
+							component.Radius = serializedComponent.GetPrimitiveTypePropertyValueOrDefault<Float>("Radius");
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::CircleColliderComponent>();
+							changed |= ImGuiUtil::DrawFloatControl("Radius", component.Radius); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/KillComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::DrawCircleColliderComponent>
+			(
+				"Draw Circle Collider Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::DrawCircleColliderComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("Color", component.Color);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::DrawCircleColliderComponent>();
+							component.Color = serializedComponent.GetPrimitiveTypePropertyValueOr<Color4>("Color", Color::Green);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::DrawCircleColliderComponent>();
+							changed |= ImGuiUtil::DrawColor4Control("Color", component.Color); updateContextAfterDrawControlCall(drawInspectorContext);
 							return changed;
 						}
 					}
@@ -445,12 +504,14 @@ namespace DYE::DYEditor
 						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
 						{
 							auto const& component = entity.GetComponent<DYE::DYEditor::ExplodeOnKilledComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("TeamIDToKill", component.TeamIDToKill);
 							serializedComponent.SetPrimitiveTypePropertyValue("ExplodeRadius", component.ExplodeRadius);
 							return SerializationResult {};
 						},
 						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
 						{
 							auto& component = entity.AddOrGetComponent<DYE::DYEditor::ExplodeOnKilledComponent>();
+							component.TeamIDToKill = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("TeamIDToKill", ENEMY_TEAM);
 							component.ExplodeRadius = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("ExplodeRadius", 3.5f);
 							return DeserializationResult {};
 						},
@@ -458,6 +519,7 @@ namespace DYE::DYEditor
 						{
 							bool changed = false;
 							auto& component = entity.GetComponent<DYE::DYEditor::ExplodeOnKilledComponent>();
+							changed |= ImGuiUtil::DrawIntControl("TeamIDToKill", component.TeamIDToKill); updateContextAfterDrawControlCall(drawInspectorContext);
 							changed |= ImGuiUtil::DrawFloatControl("ExplodeRadius", component.ExplodeRadius); updateContextAfterDrawControlCall(drawInspectorContext);
 							return changed;
 						}
@@ -541,12 +603,20 @@ namespace DYE::DYEditor
 		TypeRegistry::RegisterSystem("Render Debug Sphere System", &_RenderDebugSphereSystem);
 
 		// System located in include/Systems/KillSystems.h
+		static DYE::DYEditor::GameEffectOnKilledSystem _GameEffectOnKilledSystem;
+		TypeRegistry::RegisterSystem("Game Effect On Killed System", &_GameEffectOnKilledSystem);
+
+		// System located in include/Systems/KillSystems.h
 		static DYE::DYEditor::DestroyEntityOnKilledSystem _DestroyEntityOnKilledSystem;
 		TypeRegistry::RegisterSystem("Destroy Entity On Killed System", &_DestroyEntityOnKilledSystem);
 
 		// System located in include/Systems/KillSystems.h
 		static DYE::DYEditor::ExplodeAnimationSystem _ExplodeAnimationSystem;
 		TypeRegistry::RegisterSystem("Explode Animation System", &_ExplodeAnimationSystem);
+
+		// System located in include/Systems/KillSystems.h
+		static DYE::DYEditor::DrawCircleColliderSystem _DrawCircleColliderSystem;
+		TypeRegistry::RegisterSystem("Draw Circle Collider Component", &_DrawCircleColliderSystem);
 
 	}
 

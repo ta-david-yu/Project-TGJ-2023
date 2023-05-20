@@ -3,16 +3,36 @@
 #include "Core/EditorComponent.h"
 #include "Math/Color.h"
 
+#define PLAYER_TEAM 0
+#define ENEMY_TEAM 1
+
 namespace DYE::DYEditor
 {
 	DYE_COMPONENT("Killable Component", DYE::DYEditor::KillableComponent)
 	struct KillableComponent
 	{
 		DYE_PROPERTY()
+		DYE::Int32 TeamID = PLAYER_TEAM;
+
+		DYE_PROPERTY()
 		DYE::Int32 MaxHitPoint = 1;
 
 		DYE_PROPERTY()
 		DYE::Int32 CurrHitPoint = 1;
+	};
+
+	DYE_COMPONENT("Circle Collider Component", DYE::DYEditor::CircleColliderComponent)
+	struct CircleColliderComponent
+	{
+		DYE_PROPERTY()
+		DYE::Float Radius;
+	};
+
+	DYE_COMPONENT("Draw Circle Collider Component", DYE::DYEditor::DrawCircleColliderComponent)
+	struct DrawCircleColliderComponent
+	{
+		DYE_PROPERTY()
+		DYE::Color4 Color = Color::Green;
 	};
 
 	DYE_COMPONENT("Killed Component", DYE::DYEditor::KilledComponent)
@@ -23,6 +43,9 @@ namespace DYE::DYEditor
 	DYE_COMPONENT("Explode On Killed Component", DYE::DYEditor::ExplodeOnKilledComponent)
 	struct ExplodeOnKilledComponent
 	{
+		DYE_PROPERTY()
+		DYE::Int32 TeamIDToKill = ENEMY_TEAM;
+
 		DYE_PROPERTY()
 		DYE::Float ExplodeRadius = 3.5f;
 	};
