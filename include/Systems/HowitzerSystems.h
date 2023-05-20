@@ -40,6 +40,7 @@ namespace DYE::DYEditor
 	struct HowitzerInputSystem final : public SystemBase
 	{
 		bool UseDebugKeyboardInput = false;
+		bool IgnoreAmmoCount = false;
 
 		ExecutionPhase GetPhase() const final { return ExecutionPhase::Update; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
@@ -92,25 +93,9 @@ namespace DYE::DYEditor
 						float const length = glm::length(axis);
 						if (length > 0.0001f)
 						{
-							float const angleRadian = glm::atan(axis.x, axis.y);
+							float const angleRadian = glm::atan(axis.y, axis.x);
 							howitzerAiming.AngleDegreeRelativeToParent = glm::degrees(angleRadian);
 						}
-
-						/*
-						// The distance of the howitzer
-						float distanceT = length;
-						float const minimumLength = 0.1f;
-						if (distanceT < minimumLength)
-						{
-							distanceT = minimumLength;
-						}
-						if (distanceT > 1.0f)
-						{
-							distanceT = 1.0f;
-						}
-						distanceT -= minimumLength;
-						distanceT /= (1.0f - minimumLength);
-						howitzerAiming.CurrDistance = Math::Lerp(howitzerAiming.MinDistance, howitzerAiming.MaxDistance, distanceT);*/
 
 						if (InputEventBuffingLayer::IsIncreaseDistancePressed())
 						{
@@ -135,6 +120,11 @@ namespace DYE::DYEditor
 						INPUT.GetKeyDown(howitzerInput.FireButton) ||
 						INPUT.GetGamepadButton(howitzerInput.ControllerID, howitzerInput.FireGamepadButton))
 					{
+						if (!IgnoreAmmoCount && !howitzerAiming.IsLoadedWithAmmo)
+						{
+							continue;
+						}
+
 						Entity firedProjectile = world.CreateEntity("Player Projectile");
 						auto &projectileTransform = firedProjectile.AddComponent<TransformComponent>();
 						projectileTransform.Position = transform.Position;
@@ -148,7 +138,13 @@ namespace DYE::DYEditor
 						explodeOnKilled.TeamIDToKill = ENEMY_TEAM;
 						explodeOnKilled.ExplodeRadius = 3.5f;
 
-						firedProjectile.AddComponent<DrawTriangleOnTransformComponent>();
+						auto &spriteRenderer = firedProjectile.AddComponent<SpriteRendererComponent>();
+						spriteRenderer.Texture = Texture2D::Create("assets//Textures//Bullet.png");
+
+						//firedProjectile.AddComponent<DrawTriangleOnTransformComponent>();
+
+						// Used up the ammo.
+						howitzerAiming.IsLoadedWithAmmo = false;
 					}
 				}
 			}
@@ -157,6 +153,7 @@ namespace DYE::DYEditor
 		void DrawInspector(DYE::DYEditor::World &world) override
 		{
 			ImGuiUtil::DrawBoolControl("Debug Keyboard Input", UseDebugKeyboardInput);
+			ImGuiUtil::DrawBoolControl("Ignore Ammo Load", IgnoreAmmoCount);
 		}
 	};
 
@@ -214,7 +211,7 @@ namespace DYE::DYEditor
 				// Current distance.
 				auto const aimPosition = transform.Position + transform.GetRight() * howitzerAiming.CurrDistance;
 				float const hitRadius = 3.5f; // FIXME: put this in another component.
-				DebugDraw::Circle(aimPosition, hitRadius, glm::vec3(0, 0, 1), Color::Red);
+				DebugDraw::Circle(aimPosition, hitRadius, glm::vec3(0, 0, 1), Color::White);
 				DebugDraw::Circle(aimPosition, 0.25f, glm::vec3(0, 0, 1), Color::Yellow);
 			}
 		}

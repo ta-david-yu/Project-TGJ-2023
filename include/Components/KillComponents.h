@@ -50,6 +50,25 @@ namespace DYE::DYEditor
 		DYE::Float ExplodeRadius = 3.5f;
 	};
 
+	DYE_COMPONENT("Play Explode Animation On Killed", DYE::DYEditor::PlayExplodeAnimationOnKilledComponent)
+	struct PlayExplodeAnimationOnKilledComponent
+	{
+		DYE_PROPERTY()
+		DYE::Float StartRadius = 3.5f;
+
+		DYE_PROPERTY()
+		DYE::Float EndRadius = 5.5f;
+
+		DYE_PROPERTY()
+		DYE::Color4 StartColor = Color::White;
+
+		DYE_PROPERTY()
+		DYE::Color4 EndColor = glm::vec4(1, 1, 1, 0);
+
+		DYE_PROPERTY()
+		DYE::Float AnimationTime = 0.5f;
+	};
+
 	DYE_COMPONENT("Add Points To Team On Killed Component", DYE::DYEditor::AddPointsToTeamOnKilledComponent)
 	struct AddPointsToTeamOnKilledComponent
 	{

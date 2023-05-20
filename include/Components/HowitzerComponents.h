@@ -49,6 +49,9 @@ namespace DYE::DYEditor
 
 		DYE_PROPERTY()
 		DYE::Float CurrDistance = 5;
+
+		DYE_PROPERTY()
+		DYE::Bool IsLoadedWithAmmo = true;
 	};
 
 	DYE_COMPONENT("Projectile Movement Component", DYE::DYEditor::ProjectileMovementComponent)

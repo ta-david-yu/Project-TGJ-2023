@@ -48,13 +48,25 @@ namespace DYE::DYEditor
 
 				if (ImGui::Begin("Score", nullptr, windowFlags))
 				{
-					//ImGui::PushStyleVar(ImGui)
-					ImGui::Text("Score: %d", teamPoints.Points);
+					ImGui::SetWindowFontScale(2.0f);
+					ImGui::TextUnformatted("Score");
+					ImGui::Separator();
+					ImGui::Text("%d", teamPoints.Points);
 				}
 				ImGui::End();
 
 				//Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
 			}
+		}
+	};
+
+	DYE_SYSTEM("Howitzer Window System", DYE::DYEditor::HowitzerWindowSystem)
+	struct HowitzerWindowSystem final : public SystemBase
+	{
+		ExecutionPhase GetPhase() const override { return ExecutionPhase::ImGui; }
+		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
+		{
+
 		}
 	};
 }

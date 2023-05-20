@@ -42,7 +42,10 @@ set(HEADER_FILES
         include/Systems/KillSystems.h
         include/InputEventBuffingLayer.h
         include/Systems/UISystems.h
-        include/Components/EnvironmentComponents.h)
+        include/Components/EnvironmentComponents.h
+        include/Systems/EnvironmentSystems.h
+        include/Systems/GameStateSystems.h
+        include/Components/GameStateComponents.h)
 
 set(INCLUDE_DIRS
         include

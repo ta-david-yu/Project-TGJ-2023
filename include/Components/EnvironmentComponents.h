@@ -12,4 +12,36 @@ namespace DYE::DYEditor
 	struct BorderComponent
 	{
 	};
+
+	DYE_COMPONENT("Rocket Spawner", DYE::DYEditor::RocketSpawnerComponent)
+	struct RocketSpawnerComponent
+	{
+		DYE_PROPERTY()
+		DYE::Float InitialSpawnInterval = 20.0f;
+
+		DYE_PROPERTY()
+		DYE::Float SpawnIntervalRandomOffset = 3;
+
+		DYE_PROPERTY()
+		DYE::Int32 SpawnsPerTarget = 1;
+
+		DYE_PROPERTY()
+		DYE::Float SpawnStartingRadius = 25;
+
+		DYE_PROPERTY()
+		DYE::Float AimRadiusOffset = 2.5f;
+
+		DYE_PROPERTY()
+		DYE::Float SpawnTimer = 20.0f;
+	};
+
+	DYE_COMPONENT("Kill Rocket Target On Overlap", DYE::DYEditor::KillRocketTargetOnOverlap)
+	struct KillRocketTargetOnOverlap
+	{
+	};
+
+	DYE_COMPONENT("Rocket Target", DYE::DYEditor::RocketTargetComponent)
+	struct RocketTargetComponent
+	{
+	};
 }

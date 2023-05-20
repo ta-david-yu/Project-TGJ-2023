@@ -61,6 +61,27 @@ namespace DYE::DYEditor
 				}
 			}
 
+			// Play explosion animation on killed.
+			{
+				auto view = world.GetView<KilledComponent, PlayExplodeAnimationOnKilledComponent, TransformComponent>();
+				for (auto entity: view)
+				{
+					auto &explodeAnimationOnKilled = view.get<PlayExplodeAnimationOnKilledComponent>(entity);
+					auto killedTransform = view.get<TransformComponent>(entity);
+
+					// Play explosion animation effect.
+					Entity animationEntity = world.CreateEntity("Explode Effect");
+					animationEntity.AddComponent<TransformComponent>().Position = killedTransform.Position;
+
+					auto &explodeAnimation = animationEntity.AddComponent<ExplodeAnimationComponent>();
+					explodeAnimation.StartRadius = explodeAnimationOnKilled.StartRadius;
+					explodeAnimation.EndRadius = explodeAnimationOnKilled.EndRadius;
+					explodeAnimation.StartColor = explodeAnimationOnKilled.StartColor;
+					explodeAnimation.EndColor = explodeAnimationOnKilled.EndColor;
+					explodeAnimation.AnimationTime = explodeAnimationOnKilled.AnimationTime;
+				}
+			}
+
 			// Add points on killed.
 			{
 				auto teamPointView = world.GetView<TeamPointsComponent>();
