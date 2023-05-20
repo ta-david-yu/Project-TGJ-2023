@@ -28,6 +28,8 @@ namespace DYE::DYEditor
 		DYE::Float DistanceChangePerPress = 1;
 	};
 
+
+
 	DYE_COMPONENT("Howitzer Aiming Component", DYE::DYEditor::HowitzerAimingComponent)
 	struct HowitzerAimingComponent
 	{

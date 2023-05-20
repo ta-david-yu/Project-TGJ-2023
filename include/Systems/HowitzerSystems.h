@@ -103,22 +103,34 @@ namespace DYE::DYEditor
 		ExecutionPhase GetPhase() const final { return ExecutionPhase::Render; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
 		{
-			auto view = world.GetView<HowitzerAimingComponent, TransformComponent>();
+			auto view = world.GetView<HowitzerInputComponent, HowitzerAimingComponent, TransformComponent>();
 			for (auto entity : view)
 			{
+				auto howitzerInput = view.get<HowitzerInputComponent>(entity);
 				auto howitzerAiming = view.get<HowitzerAimingComponent>(entity);
 				auto &transform = view.get<TransformComponent>(entity);
-
-				auto const aimPosition = transform.Position + transform.GetRight() * howitzerAiming.CurrDistance;
-				float const hitRadius = 2; // FIXME: put this in another component.
-				DebugDraw::Circle(aimPosition, hitRadius, glm::vec3(0, 0, 1), Color::Red);
 
 				// Aim distance range.
 				auto const minAimPosition = transform.Position + transform.GetRight() * howitzerAiming.MinDistance;
 				auto const maxAimPosition = transform.Position + transform.GetRight() * howitzerAiming.MaxDistance;
-				DebugDraw::Circle(minAimPosition, 0.2f, glm::vec3(0, 0, 1), Color::Yellow);
-				DebugDraw::Circle(maxAimPosition, 0.2f, glm::vec3(0, 0, 1), Color::Yellow);
+				//DebugDraw::Circle(minAimPosition, 0.2f, glm::vec3(0, 0, 1), Color::Yellow);
+				//DebugDraw::Circle(maxAimPosition, 0.2f, glm::vec3(0, 0, 1), Color::Yellow);
 				DebugDraw::Line(transform.Position, maxAimPosition, Color::Yellow);
+
+				// Ruler.
+				for (int distance = howitzerAiming.MinDistance; distance <= howitzerAiming.MaxDistance; distance += howitzerInput.DistanceChangePerPress)
+				{
+					glm::vec3 const center = transform.Position + transform.GetRight() * (float) distance;
+					glm::vec3 const left = center + transform.GetForward() * 0.15f;
+					glm::vec3 const right = center + transform.GetForward() * -0.15f;
+					DebugDraw::Line(left, right, Color::Yellow);
+				}
+
+				// Current distance.
+				auto const aimPosition = transform.Position + transform.GetRight() * howitzerAiming.CurrDistance;
+				float const hitRadius = 3.5f; // FIXME: put this in another component.
+				DebugDraw::Circle(aimPosition, hitRadius, glm::vec3(0, 0, 1), Color::Red);
+				DebugDraw::Circle(aimPosition, 0.25f, glm::vec3(0, 0, 1), Color::Yellow);
 			}
 		}
 	};
