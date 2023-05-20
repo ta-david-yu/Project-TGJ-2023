@@ -11,8 +11,8 @@ namespace DYE::DYEditor
 		DYE::Int32 ControllerID = 0;
 	};
 
-	DYE_COMPONENT("Target Rotation Component", DYE::DYEditor::TargetRotationComponent)
-	struct TargetRotationComponent
+	DYE_COMPONENT("Tank Rotation Component", DYE::DYEditor::TankRotationComponent)
+	struct TankRotationComponent
 	{
 		DYE_PROPERTY()
 		DYE::Float AngleInRadian = 0;

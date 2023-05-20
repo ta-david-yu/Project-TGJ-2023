@@ -18,8 +18,14 @@ namespace DYE::DYEditor
 		KeyCode RotateClockwiseButton = KeyCode::Right;
 		KeyCode RotateAnticlockwiseButton = KeyCode::Left;
 
+		KeyCode IncreaseDistanceButton = KeyCode::Up;
+		KeyCode DecreaseDistanceButton = KeyCode::Down;
+
 		DYE_PROPERTY()
 		DYE::Float AngleStepDegreePerPress = 18;
+
+		DYE_PROPERTY()
+		DYE::Float DistanceChangePerPress = 1;
 	};
 
 	DYE_COMPONENT("Howitzer Aiming Component", DYE::DYEditor::HowitzerAimingComponent)
@@ -27,5 +33,14 @@ namespace DYE::DYEditor
 	{
 		DYE_PROPERTY()
 		DYE::Float AngleDegreeRelativeToParent = 0;
+
+		DYE_PROPERTY()
+		DYE::Float MinDistance = 5;
+
+		DYE_PROPERTY()
+		DYE::Float MaxDistance = 15;
+
+		DYE_PROPERTY()
+		DYE::Float CurrDistance = 5;
 	};
 }

@@ -16,12 +16,12 @@ namespace DYE::DYEditor
 		ExecutionPhase GetPhase() const final { return ExecutionPhase::Update; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
 		{
-			auto view = world.GetView<TurtleInputComponent, TargetRotationComponent, TankMovementComponent>();
+			auto view = world.GetView<TurtleInputComponent, TankRotationComponent, TankMovementComponent>();
 
 			for (auto entity : view)
 			{
 				auto turtleInput = view.get<TurtleInputComponent>(entity);
-				auto &targetRotation = view.get<TargetRotationComponent>(entity);
+				auto &targetRotation = view.get<TankRotationComponent>(entity);
 				auto &tankMovement = view.get<TankMovementComponent>(entity);
 
 				if (!INPUT.IsGamepadConnected(turtleInput.ControllerID))
@@ -42,7 +42,10 @@ namespace DYE::DYEditor
 
 				// Movement
 				float const moveVertical = INPUT.GetGamepadAxis(turtleInput.ControllerID, GamepadAxis::RightStickVertical);
-				tankMovement.InputBuffer = moveVertical;
+				if (glm::abs(moveVertical) > 0.1f)
+				{
+					tankMovement.InputBuffer = moveVertical;
+				}
 
 				//float const angleDegree = glm::degrees(angleRadian);
 				//transform.Rotation = glm::quat {glm::vec3 {0, 0, angleRadian}};
@@ -56,17 +59,23 @@ namespace DYE::DYEditor
 		ExecutionPhase GetPhase() const final { return ExecutionPhase::FixedUpdate; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
 		{
-			auto view = world.GetView<TargetRotationComponent, TankMovementComponent, TransformComponent>();
+			auto view = world.GetView<TankRotationComponent, TankMovementComponent, TransformComponent>();
 
 			for (auto entity : view)
 			{
-				auto targetRotation = view.get<TargetRotationComponent>(entity);
-				auto tankMovement = view.get<TankMovementComponent>(entity);
+				auto targetRotation = view.get<TankRotationComponent>(entity);
+				auto &tankMovement = view.get<TankMovementComponent>(entity);
 				auto &transform = view.get<TransformComponent>(entity);
 
 				transform.Rotation = glm::quat(glm::vec3(0, 0, targetRotation.AngleInRadian));
-				auto movingDir = transform.GetRight();
-				transform.Position += movingDir * (tankMovement.InputBuffer * tankMovement.FullSpeedPerSecond * (float) TIME.FixedDeltaTime());
+
+				if (glm::abs(tankMovement.InputBuffer) > 0.0f)
+				{
+					auto movingDir = transform.GetRight();
+					transform.Position += movingDir * (tankMovement.InputBuffer * tankMovement.FullSpeedPerSecond *
+													   (float) TIME.FixedDeltaTime());
+					tankMovement.InputBuffer = 0;
+				}
 			}
 		}
 	};

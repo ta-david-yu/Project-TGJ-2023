@@ -157,27 +157,27 @@ namespace DYE::DYEditor
 			);
 
 		// Component located in include/Components/TurtleComponents.h
-		TypeRegistry::RegisterComponentType<DYE::DYEditor::TargetRotationComponent>
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::TankRotationComponent>
 			(
-				"Target Rotation Component",
+				"Tank Rotation Component",
 				ComponentTypeDescriptor
 					{
 						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
 						{
-							auto const& component = entity.GetComponent<DYE::DYEditor::TargetRotationComponent>();
+							auto const& component = entity.GetComponent<DYE::DYEditor::TankRotationComponent>();
 							serializedComponent.SetPrimitiveTypePropertyValue("AngleInRadian", component.AngleInRadian);
 							return SerializationResult {};
 						},
 						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
 						{
-							auto& component = entity.AddOrGetComponent<DYE::DYEditor::TargetRotationComponent>();
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::TankRotationComponent>();
 							component.AngleInRadian = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("AngleInRadian", 0);
 							return DeserializationResult {};
 						},
 						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
 						{
 							bool changed = false;
-							auto& component = entity.GetComponent<DYE::DYEditor::TargetRotationComponent>();
+							auto& component = entity.GetComponent<DYE::DYEditor::TankRotationComponent>();
 							changed |= ImGuiUtil::DrawFloatControl("AngleInRadian", component.AngleInRadian); updateContextAfterDrawControlCall(drawInspectorContext);
 							return changed;
 						}
@@ -253,12 +253,14 @@ namespace DYE::DYEditor
 						{
 							auto const& component = entity.GetComponent<DYE::DYEditor::HowitzerInputComponent>();
 							serializedComponent.SetPrimitiveTypePropertyValue("AngleStepDegreePerPress", component.AngleStepDegreePerPress);
+							serializedComponent.SetPrimitiveTypePropertyValue("DistanceChangePerPress", component.DistanceChangePerPress);
 							return SerializationResult {};
 						},
 						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
 						{
 							auto& component = entity.AddOrGetComponent<DYE::DYEditor::HowitzerInputComponent>();
 							component.AngleStepDegreePerPress = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("AngleStepDegreePerPress", 18);
+							component.DistanceChangePerPress = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("DistanceChangePerPress", 1);
 							return DeserializationResult {};
 						},
 						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
@@ -266,6 +268,7 @@ namespace DYE::DYEditor
 							bool changed = false;
 							auto& component = entity.GetComponent<DYE::DYEditor::HowitzerInputComponent>();
 							changed |= ImGuiUtil::DrawFloatControl("AngleStepDegreePerPress", component.AngleStepDegreePerPress); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("DistanceChangePerPress", component.DistanceChangePerPress); updateContextAfterDrawControlCall(drawInspectorContext);
 							return changed;
 						}
 					}
@@ -281,12 +284,18 @@ namespace DYE::DYEditor
 						{
 							auto const& component = entity.GetComponent<DYE::DYEditor::HowitzerAimingComponent>();
 							serializedComponent.SetPrimitiveTypePropertyValue("AngleDegreeRelativeToParent", component.AngleDegreeRelativeToParent);
+							serializedComponent.SetPrimitiveTypePropertyValue("MinDistance", component.MinDistance);
+							serializedComponent.SetPrimitiveTypePropertyValue("MaxDistance", component.MaxDistance);
+							serializedComponent.SetPrimitiveTypePropertyValue("CurrDistance", component.CurrDistance);
 							return SerializationResult {};
 						},
 						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
 						{
 							auto& component = entity.AddOrGetComponent<DYE::DYEditor::HowitzerAimingComponent>();
 							component.AngleDegreeRelativeToParent = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("AngleDegreeRelativeToParent", 0);
+							component.MinDistance = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("MinDistance", 5);
+							component.MaxDistance = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("MaxDistance", 15);
+							component.CurrDistance = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("CurrDistance", 5);
 							return DeserializationResult {};
 						},
 						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
@@ -294,6 +303,9 @@ namespace DYE::DYEditor
 							bool changed = false;
 							auto& component = entity.GetComponent<DYE::DYEditor::HowitzerAimingComponent>();
 							changed |= ImGuiUtil::DrawFloatControl("AngleDegreeRelativeToParent", component.AngleDegreeRelativeToParent); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("MinDistance", component.MinDistance); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("MaxDistance", component.MaxDistance); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("CurrDistance", component.CurrDistance); updateContextAfterDrawControlCall(drawInspectorContext);
 							return changed;
 						}
 					}
@@ -322,6 +334,10 @@ namespace DYE::DYEditor
 		// System located in include/Systems/HowitzerSystems.h
 		static DYE::DYEditor::RotateHowitzerSystem _RotateHowitzerSystem;
 		TypeRegistry::RegisterSystem("Rotate Howitzer System", &_RotateHowitzerSystem);
+
+		// System located in include/Systems/HowitzerSystems.h
+		static DYE::DYEditor::RenderHowitzerAimSystem _RenderHowitzerAimSystem;
+		TypeRegistry::RegisterSystem("Render Howitzer Aim System", &_RenderHowitzerAimSystem);
 
 	}
 
