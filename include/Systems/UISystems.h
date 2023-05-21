@@ -208,12 +208,12 @@ namespace DYE::DYEditor
 				ImGui::TextWrapped("Follow the commander's order to move around. Rotate to turn & lean forward/backward to move.");
 
 				ImGui::Separator();
-				ImGui::TextUnformatted("Press Confirm Button To Start");
+				ImGui::TextUnformatted("Press Fire Button To Start");
 			}
 			ImGui::End();
 
 			// Check input logic, if we should load the new scene.
-			if (InputEventBuffingLayer::IsConfirmPressed())
+			if (InputEventBuffingLayer::IsFirePressed())
 			{
 				auto &loadSceneComponent = world.CreateCommandEntity().AddComponent<LoadSceneComponent>();
 				loadSceneComponent.SceneAssetPath = "assets//Scenes//GameScene.tscene";

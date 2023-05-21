@@ -159,12 +159,12 @@ namespace DYE::DYEditor
 					ImGui::TextUnformatted("Game Over");
 					ImGui::Text("Score - %d", (int) teamPoints.Points);
 					ImGui::Separator();
-					ImGui::TextUnformatted("Press Confirm Button To Restart");
+					ImGui::TextUnformatted("Press Fire Button To Restart");
 				}
 				ImGui::End();
 
 				// Check input logic, if we should load the new scene.
-				if (InputEventBuffingLayer::IsConfirmPressed())
+				if (InputEventBuffingLayer::IsFirePressed())
 				{
 					auto &loadSceneComponent = world.CreateCommandEntity().AddComponent<LoadSceneComponent>();
 					loadSceneComponent.SceneAssetPath = timer.ScenePathToLoadOnConfirm;
