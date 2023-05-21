@@ -931,7 +931,7 @@ namespace DYE::DYEditor
 						{
 							auto& component = entity.AddOrGetComponent<DYE::DYEditor::TeamPointsComponent>();
 							component.TeamID = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("TeamID", PLAYER_TEAM);
-							component.Points = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("Points", 0);
+							component.Points = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("Points", 0);
 							return DeserializationResult {};
 						},
 						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
@@ -939,7 +939,35 @@ namespace DYE::DYEditor
 							bool changed = false;
 							auto& component = entity.GetComponent<DYE::DYEditor::TeamPointsComponent>();
 							changed |= ImGuiUtil::DrawIntControl("TeamID", component.TeamID); updateContextAfterDrawControlCall(drawInspectorContext);
-							changed |= ImGuiUtil::DrawIntControl("Points", component.Points); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("Points", component.Points); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/GameStateComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::IncreasePointsEverySecondComponent>
+			(
+				"Increase Points Every Second",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::IncreasePointsEverySecondComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("Value", component.Value);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::IncreasePointsEverySecondComponent>();
+							component.Value = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("Value", 3);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::IncreasePointsEverySecondComponent>();
+							changed |= ImGuiUtil::DrawFloatControl("Value", component.Value); updateContextAfterDrawControlCall(drawInspectorContext);
 							return changed;
 						}
 					}
@@ -1149,6 +1177,10 @@ namespace DYE::DYEditor
 		// System located in include/Systems/GameStateSystems.h
 		static DYE::DYEditor::SetLineWidthToOneOnTearDown _SetLineWidthToOneOnTearDown;
 		TypeRegistry::RegisterSystem("Set Graphics On TearDown System", &_SetLineWidthToOneOnTearDown);
+
+		// System located in include/Systems/GameStateSystems.h
+		static DYE::DYEditor::IncreasePointsEverySecondSystem _IncreasePointsEverySecondSystem;
+		TypeRegistry::RegisterSystem("Increase Points Every Second System", &_IncreasePointsEverySecondSystem);
 
 		// System located in include/Systems/GameStateSystems.h
 		static DYE::DYEditor::CheckIfGameOverSystem _CheckIfGameOverSystem;

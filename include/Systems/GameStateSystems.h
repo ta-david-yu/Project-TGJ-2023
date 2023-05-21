@@ -61,6 +61,29 @@ namespace DYE::DYEditor
 		}
 	};
 
+	DYE_SYSTEM("Increase Points Every Second System", DYE::DYEditor::IncreasePointsEverySecondSystem)
+	struct IncreasePointsEverySecondSystem final : public SystemBase
+	{
+		ExecutionPhase GetPhase() const override { return ExecutionPhase::Update; }
+		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
+		{
+			auto view = world.GetView<TeamPointsComponent, IncreasePointsEverySecondComponent>();
+			for (auto entity : view)
+			{
+				Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
+				if (wrappedEntity.HasComponent<IsGameOverComponent>())
+				{
+					continue;
+				}
+
+				auto &teamPoints = view.get<TeamPointsComponent>(entity);
+				auto &increasePoints = view.get<IncreasePointsEverySecondComponent>(entity);
+
+				teamPoints.Points += increasePoints.Value * (float) TIME.DeltaTime();
+			}
+		}
+	};
+
 	DYE_SYSTEM("Check If GameOver System", DYE::DYEditor::CheckIfGameOverSystem)
 	struct CheckIfGameOverSystem final : public SystemBase
 	{
@@ -134,7 +157,7 @@ namespace DYE::DYEditor
 				{
 					ImGui::SetWindowFontScale(3.0f);
 					ImGui::TextUnformatted("Game Over");
-					ImGui::Text("Score - %d", teamPoints.Points);
+					ImGui::Text("Score - %d", (int) teamPoints.Points);
 					ImGui::Separator();
 					ImGui::TextUnformatted("Press Fire Button To Restart");
 				}

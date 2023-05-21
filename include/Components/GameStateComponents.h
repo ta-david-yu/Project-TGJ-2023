@@ -23,7 +23,14 @@ namespace DYE::DYEditor
 		DYE::Int32 TeamID = PLAYER_TEAM;
 
 		DYE_PROPERTY()
-		DYE::Int32 Points = 0;
+		DYE::Float Points = 0;
+	};
+
+	DYE_COMPONENT("Increase Points Every Second", DYE::DYEditor::IncreasePointsEverySecondComponent)
+	struct IncreasePointsEverySecondComponent
+	{
+		DYE_PROPERTY()
+		DYE::Float Value = 3;
 	};
 
 	DYE_COMPONENT("Death Contribute Points", DYE::DYEditor::DeathContributePointsComponent)

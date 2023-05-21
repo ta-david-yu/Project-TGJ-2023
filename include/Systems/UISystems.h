@@ -55,7 +55,7 @@ namespace DYE::DYEditor
 					ImGui::SetWindowFontScale(2.0f);
 					ImGui::TextUnformatted("Score");
 					ImGui::Separator();
-					ImGui::Text("%d", teamPoints.Points);
+					ImGui::Text("%d", (int) teamPoints.Points);
 				}
 				ImGui::End();
 
