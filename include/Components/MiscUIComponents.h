@@ -14,4 +14,11 @@ namespace DYE::DYEditor
 		DYE_PROPERTY()
 		DYE::String Text;
 	};
+
+	DYE_COMPONENT("Aimer Window Component", DYE::DYEditor::AimerWindowComponent)
+	struct AimerWindowComponent
+	{
+		DYE_PROPERTY()
+		DYE::Vector3 Offset = glm::vec3(0, 200, 0);
+	};
 }

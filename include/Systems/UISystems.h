@@ -7,12 +7,14 @@
 #include "Components/KillComponents.h"
 #include "Components/GameStateComponents.h"
 #include "Components/MiscUIComponents.h"
+#include "Components/EnvironmentComponents.h"
 #include "Core/Time.h"
 #include "Math/Math.h"
 #include "Math/EasingFunctions.h"
 #include "Math/PrimitiveTest.h"
 #include "ImGui/ImGuiUtil.h"
 #include "InputEventBuffingLayer.h"
+#include "Graphics/RenderCommand.h"
 
 #include "Graphics/DebugDraw.h"
 
@@ -163,16 +165,6 @@ namespace DYE::DYEditor
 		}
 	};
 
-	DYE_SYSTEM("Howitzer Window System", DYE::DYEditor::HowitzerWindowSystem)
-	struct HowitzerWindowSystem final : public SystemBase
-	{
-		ExecutionPhase GetPhase() const override { return ExecutionPhase::ImGui; }
-		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
-		{
-
-		}
-	};
-
 
 	DYE_SYSTEM("Title Tutorial UI System", DYE::DYEditor::TitleTutorialUISystem)
 	struct TitleTutorialUISystem final : public SystemBase
@@ -225,6 +217,92 @@ namespace DYE::DYEditor
 			{
 				auto &loadSceneComponent = world.CreateCommandEntity().AddComponent<LoadSceneComponent>();
 				loadSceneComponent.SceneAssetPath = "assets//Scenes//GameScene.tscene";
+			}
+		}
+	};
+
+
+	DYE_SYSTEM("Aimer Window System", DYE::DYEditor::AimerWindowSystem)
+	struct AimerWindowSystem final : public SystemBase
+	{
+		std::shared_ptr<Texture2D> TurtleTexture;
+
+		ExecutionPhase GetPhase() const override { return ExecutionPhase::Render; }
+
+		void InitializeLoad(DYE::DYEditor::World &world, DYE::DYEditor::InitializeLoadParameters) override
+		{
+			TurtleTexture = Texture2D::Create("assets//Textures//Turtle.png");
+		}
+
+		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
+		{
+			// Copy turtle position, Howizter angle & distance & world border.
+
+			auto view = world.GetView<AimerWindowComponent>();
+			for (auto aimerWindowEntity : view)
+			{
+				auto offset = view.get<AimerWindowComponent>(aimerWindowEntity).Offset;
+
+				// Player turtle
+				{
+					auto playerView = world.GetView<PlayerComponent, TransformComponent, CircleColliderComponent>();
+					for (auto playerEntity: playerView)
+					{
+						auto &transform = playerView.get<TransformComponent>(playerEntity);
+						auto &circleCollider = playerView.get<CircleColliderComponent>(playerEntity);
+
+						auto position = transform.Position + offset;
+						DebugDraw::Circle(position, circleCollider.Radius, glm::vec3(0, 0, 1), Color::White);
+						DebugDraw::Line(position, position + transform.GetRight() * circleCollider.Radius,
+										Color::White);
+					}
+				}
+
+				// Howitzer aiming
+				{
+					auto howitzerView = world.GetView<HowitzerAimingComponent, HowitzerInputComponent, TransformComponent>();
+					for (auto howitzerEntity: howitzerView)
+					{
+						auto howitzerInput = howitzerView.get<HowitzerInputComponent>(howitzerEntity);
+						auto howitzerAiming = howitzerView.get<HowitzerAimingComponent>(howitzerEntity);
+						auto &transform = howitzerView.get<TransformComponent>(howitzerEntity);
+
+						// Aim distance range.
+						auto const minAimPosition = transform.Position + transform.GetRight() * howitzerAiming.MinDistance;
+						auto const maxAimPosition = transform.Position + transform.GetRight() * howitzerAiming.MaxDistance;
+						//DebugDraw::Circle(minAimPosition, 0.2f, glm::vec3(0, 0, 1), Color::Yellow);
+						//DebugDraw::Circle(maxAimPosition, 0.2f, glm::vec3(0, 0, 1), Color::Yellow);
+						DebugDraw::Line(transform.Position + offset, maxAimPosition + offset, Color::Yellow);
+
+						// Ruler.
+						for (int distance = howitzerAiming.MinDistance; distance <= howitzerAiming.MaxDistance; distance += howitzerInput.DistanceChangePerPress)
+						{
+							glm::vec3 const center = transform.Position + transform.GetRight() * (float) distance;
+							glm::vec3 const left = center + transform.GetForward() * 0.15f;
+							glm::vec3 const right = center + transform.GetForward() * -0.15f;
+							DebugDraw::Line(left + offset, right + offset, Color::Yellow);
+						}
+
+						// Current distance.
+						auto const aimPosition = transform.Position + transform.GetRight() * howitzerAiming.CurrDistance;
+						float const hitRadius = 3.5f; // FIXME: put this in another component.
+						DebugDraw::Circle(aimPosition + offset, hitRadius, glm::vec3(0, 0, 1), Color::White);
+						DebugDraw::Circle(aimPosition + offset, 0.25f, glm::vec3(0, 0, 1), Color::Yellow);
+					}
+				}
+
+				// World border
+				{
+					auto borderView = world.GetView<BorderComponent, CircleColliderComponent, DrawCircleColliderComponent, TransformComponent>();
+					for (auto borderEntity: borderView)
+					{
+						auto &circle = borderView.get<CircleColliderComponent>(borderEntity);
+						auto &drawCircle = borderView.get<DrawCircleColliderComponent>(borderEntity);
+						auto &transform = borderView.get<TransformComponent>(borderEntity);
+
+						DebugDraw::Circle(transform.Position + offset, circle.Radius, glm::vec3(0, 0, 1), drawCircle.Color);
+					}
+				}
 			}
 		}
 	};

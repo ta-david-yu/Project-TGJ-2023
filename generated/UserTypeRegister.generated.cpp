@@ -1153,6 +1153,34 @@ namespace DYE::DYEditor
 					}
 			);
 
+		// Component located in include/Components/MiscUIComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::AimerWindowComponent>
+			(
+				"Aimer Window Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::AimerWindowComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("Offset", component.Offset);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::AimerWindowComponent>();
+							component.Offset = serializedComponent.GetPrimitiveTypePropertyValueOr<Vector3>("Offset", glm::vec3(0, 200, 0));
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::AimerWindowComponent>();
+							changed |= ImGuiUtil::DrawVector3Control("Offset", component.Offset); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
 		// System located in include/Systems/ExampleSystem.h
 		static DYE::DYEditor::Template::ExampleSystem _ExampleSystem;
 		TypeRegistry::RegisterSystem("Example System", &_ExampleSystem);
@@ -1226,12 +1254,12 @@ namespace DYE::DYEditor
 		TypeRegistry::RegisterSystem("Howitzer HUD System", &_HowitzerHUDSystem);
 
 		// System located in include/Systems/UISystems.h
-		static DYE::DYEditor::HowitzerWindowSystem _HowitzerWindowSystem;
-		TypeRegistry::RegisterSystem("Howitzer Window System", &_HowitzerWindowSystem);
-
-		// System located in include/Systems/UISystems.h
 		static DYE::DYEditor::TitleTutorialUISystem _TitleTutorialUISystem;
 		TypeRegistry::RegisterSystem("Title Tutorial UI System", &_TitleTutorialUISystem);
+
+		// System located in include/Systems/UISystems.h
+		static DYE::DYEditor::AimerWindowSystem _AimerWindowSystem;
+		TypeRegistry::RegisterSystem("Aimer Window System", &_AimerWindowSystem);
 
 		// System located in include/Systems/EnvironmentSystems.h
 		static DYE::DYEditor::RocketSpawnerSystem _RocketSpawnerSystem;
