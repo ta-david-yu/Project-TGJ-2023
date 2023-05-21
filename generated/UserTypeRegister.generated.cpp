@@ -1222,6 +1222,10 @@ namespace DYE::DYEditor
 		TypeRegistry::RegisterSystem("Draw Popup UI System", &_DrawPopupUISystem);
 
 		// System located in include/Systems/UISystems.h
+		static DYE::DYEditor::HowitzerHUDSystem _HowitzerHUDSystem;
+		TypeRegistry::RegisterSystem("Howitzer HUD System", &_HowitzerHUDSystem);
+
+		// System located in include/Systems/UISystems.h
 		static DYE::DYEditor::HowitzerWindowSystem _HowitzerWindowSystem;
 		TypeRegistry::RegisterSystem("Howitzer Window System", &_HowitzerWindowSystem);
 

@@ -128,7 +128,7 @@ namespace DYE::DYEditor
 							teamPoints.Points += addPointsToTeam.Points;
 
 							char textBuff[256] = "";
-							std::sprintf(textBuff, "+ %d = %d", addPointsToTeam.Points, teamPoints.Points);
+							std::sprintf(textBuff, "+ %d = %f", addPointsToTeam.Points, teamPoints.Points);
 							Entity popupEntity = world.CreateEntity("Popup - Add Points");
 							popupEntity.AddComponent<KillTimerComponent>().Timer = 3.0f;
 							popupEntity.AddComponent<PopupUIComponent>().Text = textBuff;
@@ -153,7 +153,7 @@ namespace DYE::DYEditor
 							teamPoints.Points *= multiplyPoints.Multiplier;
 
 							char textBuff[256] = "";
-							std::sprintf(textBuff, "x %f = %d", multiplyPoints.Multiplier, teamPoints.Points);
+							std::sprintf(textBuff, "x %f = %f", multiplyPoints.Multiplier, teamPoints.Points);
 							Entity popupEntity = world.CreateEntity("Popup - Multiply Points");
 							popupEntity.AddComponent<KillTimerComponent>().Timer = 2.0f;
 							popupEntity.AddComponent<PopupUIComponent>().Text = textBuff;

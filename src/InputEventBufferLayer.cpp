@@ -7,6 +7,7 @@ namespace DYE::DYEditor
 {
 	struct InputData
 	{
+		bool IsConfirmPressed = false;
 		bool IsIncreaseDistancePressed = false;
 		bool IsDecreaseDistancePressed = false;
 		bool IsFirePressed = false;
@@ -31,6 +32,9 @@ namespace DYE::DYEditor
 		auto &keyEvent = (KeyEvent &) event;
 		switch (keyEvent.GetKeyCode())
 		{
+			case KeyCode::Return:
+				s_Data.IsConfirmPressed = true;
+				break;
 			case KeyCode::Up:
 				s_Data.IsIncreaseDistancePressed = true;
 				break;
@@ -67,6 +71,7 @@ namespace DYE::DYEditor
 
 	void InputEventBuffingLayer::OnEndOfFrame()
 	{
+		s_Data.IsConfirmPressed = false;
 		s_Data.IsIncreaseDistancePressed = false;
 		s_Data.IsDecreaseDistancePressed = false;
 		s_Data.IsFirePressed = false;
@@ -77,6 +82,11 @@ namespace DYE::DYEditor
 		s_Data.IsSimon3Pressed = false;
 		s_Data.IsShellInPressed = false;
 		s_Data.IsShellOutPressed = false;
+	}
+
+	bool InputEventBuffingLayer::IsConfirmPressed()
+	{
+		return s_Data.IsConfirmPressed;
 	}
 
 	bool InputEventBuffingLayer::IsIncreaseDistancePressed()

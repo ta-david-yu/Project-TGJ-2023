@@ -114,6 +114,55 @@ namespace DYE::DYEditor
 		}
 	};
 
+	DYE_SYSTEM("Howitzer HUD System", DYE::DYEditor::HowitzerHUDSystem)
+	struct HowitzerHUDSystem final : public SystemBase
+	{
+		ExecutionPhase GetPhase() const override { return ExecutionPhase::ImGui; }
+		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
+		{
+			auto view = world.GetView<HowitzerAimingComponent>();
+			for (auto entity : view)
+			{
+				HowitzerAimingComponent &howitzerAiming = view.get<HowitzerAimingComponent>(entity);
+
+				ImGuiIO& io = ImGui::GetIO();
+				ImGuiWindowFlags windowFlags =
+					ImGuiWindowFlags_NoDecoration |
+					ImGuiWindowFlags_AlwaysAutoResize |
+					ImGuiWindowFlags_NoSavedSettings |
+					ImGuiWindowFlags_NoFocusOnAppearing |
+					ImGuiWindowFlags_NoNav |
+					ImGuiWindowFlags_NoMove;
+
+				const ImGuiViewport* viewport = ImGui::GetMainViewport();
+				ImVec2 workPos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
+				ImVec2 workSize = viewport->WorkSize;
+
+				float const paddingX = 10;
+				float const paddingY = 10;
+				ImVec2 windowPos = ImVec2(workPos.x + workSize.x - paddingX, workPos.y + workSize.y - paddingY);
+				ImVec2 windowPivot = ImVec2(1, 1);
+
+				ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPivot);
+				ImGui::SetNextWindowBgAlpha(0.35f);
+
+				if (ImGui::Begin("Howitzer Loaded State", nullptr, windowFlags))
+				{
+					ImGui::SetWindowFontScale(2.0f);
+					if (howitzerAiming.IsLoadedWithAmmo)
+					{
+						ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Ammo Loaded");
+					}
+					else
+					{
+						ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Ammo Not Loaded");
+					}
+				}
+				ImGui::End();
+			}
+		}
+	};
+
 	DYE_SYSTEM("Howitzer Window System", DYE::DYEditor::HowitzerWindowSystem)
 	struct HowitzerWindowSystem final : public SystemBase
 	{
@@ -167,12 +216,12 @@ namespace DYE::DYEditor
 				ImGui::TextWrapped("Follow the commander's order to move around. Rotate to turn & lean forward/backward to move.");
 
 				ImGui::Separator();
-				ImGui::TextUnformatted("Press Fire Button To Start");
+				ImGui::TextUnformatted("Press Confirm Button To Start");
 			}
 			ImGui::End();
 
 			// Check input logic, if we should load the new scene.
-			if (InputEventBuffingLayer::IsFirePressed())
+			if (InputEventBuffingLayer::IsConfirmPressed())
 			{
 				auto &loadSceneComponent = world.CreateCommandEntity().AddComponent<LoadSceneComponent>();
 				loadSceneComponent.SceneAssetPath = "assets//Scenes//GameScene.tscene";

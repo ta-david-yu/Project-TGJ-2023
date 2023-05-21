@@ -10,6 +10,7 @@ namespace DYE::DYEditor
 		void OnEvent(DYE::Event &event) override;
 		void OnEndOfFrame() override;
 
+		static bool IsConfirmPressed();
 		static bool IsIncreaseDistancePressed();
 		static bool IsDecreaseDistancePressed();
 		static bool IsFirePressed();
