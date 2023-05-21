@@ -5,6 +5,8 @@
 #include "Core/Components.h"
 #include "Components/HowitzerComponents.h"
 #include "Components/KillComponents.h"
+#include "Components/GameStateComponents.h"
+#include "Components/MiscUIComponents.h"
 #include "Core/Time.h"
 #include "Math/Math.h"
 #include "Math/EasingFunctions.h"
@@ -14,6 +16,33 @@
 
 namespace DYE::DYEditor
 {
+	DYE_SYSTEM("Countdown Kill Timer System", DYE::DYEditor::CountdownKillTimerSystem)
+	struct CountdownKillTimerSystem final : public SystemBase
+	{
+		ExecutionPhase GetPhase() const final { return ExecutionPhase::Update; }
+		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
+		{
+			{
+				auto view = world.GetView<KillTimerComponent>();
+				for (auto entity: view)
+				{
+					auto &killTimer = view.get<KillTimerComponent>(entity);
+					killTimer.Timer -= TIME.DeltaTime();
+
+					if (killTimer.Timer > 0)
+					{
+						continue;
+					}
+
+					// The time is up, assign killed component to the entity.
+					Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
+					wrappedEntity.AddOrGetComponent<KilledComponent>();
+					wrappedEntity.RemoveComponent<KillTimerComponent>();
+				}
+			}
+		}
+	};
+
 	DYE_SYSTEM("Game Effect On Killed System", DYE::DYEditor::GameEffectOnKilledSystem)
 	struct GameEffectOnKilledSystem final : public SystemBase
 	{
@@ -85,7 +114,6 @@ namespace DYE::DYEditor
 			// Add points on killed.
 			{
 				auto teamPointView = world.GetView<TeamPointsComponent>();
-
 				auto view = world.GetView<KilledComponent, AddPointsToTeamOnKilledComponent>();
 				for (auto entity: view)
 				{
@@ -97,6 +125,37 @@ namespace DYE::DYEditor
 						if (teamPoints.TeamID == addPointsToTeam.TeamIDToAddTo)
 						{
 							teamPoints.Points += addPointsToTeam.Points;
+
+							char textBuff[256] = "";
+							std::sprintf(textBuff, "+ %d = %d", addPointsToTeam.Points, teamPoints.Points);
+							Entity popupEntity = world.CreateEntity("Popup - Add Points");
+							popupEntity.AddComponent<KillTimerComponent>().Timer = 2.0f;
+							popupEntity.AddComponent<PopupUIComponent>().Text = textBuff;
+						}
+					}
+				}
+			}
+
+			// Multiply points on killed.
+			{
+				auto teamPointView = world.GetView<TeamPointsComponent>();
+				auto view = world.GetView<KilledComponent, MultiplyPointsOfTeamOnKilledComponent>();
+				for (auto entity: view)
+				{
+					auto &multiplyPoints = view.get<MultiplyPointsOfTeamOnKilledComponent>(entity);
+
+					// Check if there is any team with the given id
+					for (auto [teamEntity, teamPoints] : teamPointView.each())
+					{
+						if (teamPoints.TeamID == multiplyPoints.TeamIDToMultiplyPoints)
+						{
+							teamPoints.Points *= multiplyPoints.Multiplier;
+
+							char textBuff[256] = "";
+							std::sprintf(textBuff, "x %f = %d", multiplyPoints.Multiplier, teamPoints.Points);
+							Entity popupEntity = world.CreateEntity("Popup - Multiply Points");
+							popupEntity.AddComponent<KillTimerComponent>().Timer = 2.0f;
+							popupEntity.AddComponent<PopupUIComponent>().Text = textBuff;
 						}
 					}
 				}

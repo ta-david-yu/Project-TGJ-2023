@@ -79,6 +79,23 @@ namespace DYE::DYEditor
 		DYE::Int32 Points = 100.0f;
 	};
 
+	DYE_COMPONENT("Multiply Points Of Team On Killed Component", DYE::DYEditor::MultiplyPointsOfTeamOnKilledComponent)
+	struct MultiplyPointsOfTeamOnKilledComponent
+	{
+		DYE_PROPERTY()
+		DYE::Int32 TeamIDToMultiplyPoints = PLAYER_TEAM;
+
+		DYE_PROPERTY()
+		DYE::Float Multiplier = 2;
+	};
+
+	DYE_COMPONENT("Kill Timer Component", DYE::DYEditor::KillTimerComponent)
+	struct KillTimerComponent
+	{
+		DYE_PROPERTY()
+		DYE::Float Timer = 1.5f;
+	};
+
 	DYE_COMPONENT("Explode Animation Component", DYE::DYEditor::ExplodeAnimationComponent)
 	struct ExplodeAnimationComponent
 	{
@@ -99,20 +116,4 @@ namespace DYE::DYEditor
 
 		DYE::Float Timer = 0.0f;
 	};
-
-	DYE_COMPONENT("Team Points Component", DYE::DYEditor::TeamPointsComponent)
-	struct TeamPointsComponent
-	{
-		DYE_PROPERTY()
-		DYE::Int32 TeamID = PLAYER_TEAM;
-
-		DYE_PROPERTY()
-		DYE::Int32 Points = 0;
-	};
-
-	DYE_COMPONENT("Team Points UI", DYE::DYEditor::TeamPointsUIComponent)
-	struct TeamPointsUIComponent
-	{
-	};
-
 }

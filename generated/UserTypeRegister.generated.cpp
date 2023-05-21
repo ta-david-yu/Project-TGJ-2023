@@ -25,6 +25,7 @@
 #include "include/Systems/EnvironmentSystems.h"
 #include "include/Systems/GameStateSystems.h"
 #include "include/Components/GameStateComponents.h"
+#include "include/Components/MiscUIComponents.h"
 
 
 namespace DYE::DYEditor
@@ -637,6 +638,65 @@ namespace DYE::DYEditor
 			);
 
 		// Component located in include/Components/KillComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::MultiplyPointsOfTeamOnKilledComponent>
+			(
+				"Multiply Points Of Team On Killed Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::MultiplyPointsOfTeamOnKilledComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("TeamIDToMultiplyPoints", component.TeamIDToMultiplyPoints);
+							serializedComponent.SetPrimitiveTypePropertyValue("Multiplier", component.Multiplier);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::MultiplyPointsOfTeamOnKilledComponent>();
+							component.TeamIDToMultiplyPoints = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("TeamIDToMultiplyPoints", PLAYER_TEAM);
+							component.Multiplier = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("Multiplier", 2);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::MultiplyPointsOfTeamOnKilledComponent>();
+							changed |= ImGuiUtil::DrawIntControl("TeamIDToMultiplyPoints", component.TeamIDToMultiplyPoints); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("Multiplier", component.Multiplier); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/KillComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::KillTimerComponent>
+			(
+				"Kill Timer Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::KillTimerComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("Timer", component.Timer);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::KillTimerComponent>();
+							component.Timer = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("Timer", 1.5f);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::KillTimerComponent>();
+							changed |= ImGuiUtil::DrawFloatControl("Timer", component.Timer); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/KillComponents.h
 		TypeRegistry::RegisterComponentType<DYE::DYEditor::ExplodeAnimationComponent>
 			(
 				"Explode Animation Component",
@@ -671,64 +731,6 @@ namespace DYE::DYEditor
 							changed |= ImGuiUtil::DrawColor4Control("StartColor", component.StartColor); updateContextAfterDrawControlCall(drawInspectorContext);
 							changed |= ImGuiUtil::DrawColor4Control("EndColor", component.EndColor); updateContextAfterDrawControlCall(drawInspectorContext);
 							changed |= ImGuiUtil::DrawFloatControl("AnimationTime", component.AnimationTime); updateContextAfterDrawControlCall(drawInspectorContext);
-							return changed;
-						}
-					}
-			);
-
-		// Component located in include/Components/KillComponents.h
-		TypeRegistry::RegisterComponentType<DYE::DYEditor::TeamPointsComponent>
-			(
-				"Team Points Component",
-				ComponentTypeDescriptor
-					{
-						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
-						{
-							auto const& component = entity.GetComponent<DYE::DYEditor::TeamPointsComponent>();
-							serializedComponent.SetPrimitiveTypePropertyValue("TeamID", component.TeamID);
-							serializedComponent.SetPrimitiveTypePropertyValue("Points", component.Points);
-							return SerializationResult {};
-						},
-						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
-						{
-							auto& component = entity.AddOrGetComponent<DYE::DYEditor::TeamPointsComponent>();
-							component.TeamID = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("TeamID", PLAYER_TEAM);
-							component.Points = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("Points", 0);
-							return DeserializationResult {};
-						},
-						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
-						{
-							bool changed = false;
-							auto& component = entity.GetComponent<DYE::DYEditor::TeamPointsComponent>();
-							changed |= ImGuiUtil::DrawIntControl("TeamID", component.TeamID); updateContextAfterDrawControlCall(drawInspectorContext);
-							changed |= ImGuiUtil::DrawIntControl("Points", component.Points); updateContextAfterDrawControlCall(drawInspectorContext);
-							return changed;
-						}
-					}
-			);
-
-		// Component located in include/Components/KillComponents.h
-		TypeRegistry::RegisterComponentType<DYE::DYEditor::TeamPointsUIComponent>
-			(
-				"Team Points UI",
-				ComponentTypeDescriptor
-					{
-						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
-						{
-
-							return SerializationResult {};
-						},
-						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
-						{
-							entity.AddOrGetComponent<DYE::DYEditor::TeamPointsUIComponent>();
-							return DeserializationResult {};
-						},
-						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
-						{
-							bool changed = false;
-							ImGui::Indent();
-							ImGui::TextUnformatted("The component doesn't have any properties (i.e. DYE_PROPERTY).");
-							ImGui::Unindent();
 							return changed;
 						}
 					}
@@ -913,6 +915,64 @@ namespace DYE::DYEditor
 			);
 
 		// Component located in include/Components/GameStateComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::TeamPointsComponent>
+			(
+				"Team Points Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::TeamPointsComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("TeamID", component.TeamID);
+							serializedComponent.SetPrimitiveTypePropertyValue("Points", component.Points);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::TeamPointsComponent>();
+							component.TeamID = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("TeamID", PLAYER_TEAM);
+							component.Points = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("Points", 0);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::TeamPointsComponent>();
+							changed |= ImGuiUtil::DrawIntControl("TeamID", component.TeamID); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawIntControl("Points", component.Points); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/GameStateComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::TeamPointsUIComponent>
+			(
+				"Team Points UI",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							entity.AddOrGetComponent<DYE::DYEditor::TeamPointsUIComponent>();
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							ImGui::Indent();
+							ImGui::TextUnformatted("The component doesn't have any properties (i.e. DYE_PROPERTY).");
+							ImGui::Unindent();
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/GameStateComponents.h
 		TypeRegistry::RegisterComponentType<DYE::DYEditor::ShowGameOverUITimerComponent>
 			(
 				"Show Game Over UI Timer",
@@ -938,6 +998,34 @@ namespace DYE::DYEditor
 							auto& component = entity.GetComponent<DYE::DYEditor::ShowGameOverUITimerComponent>();
 							changed |= ImGuiUtil::DrawFloatControl("Timer", component.Timer); updateContextAfterDrawControlCall(drawInspectorContext);
 							changed |= ImGuiUtil::DrawTextControl("ScenePathToLoadOnConfirm", component.ScenePathToLoadOnConfirm); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/MiscUIComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::PopupUIComponent>
+			(
+				"Popup UI",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::PopupUIComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("Text", component.Text);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::PopupUIComponent>();
+							component.Text = serializedComponent.GetPrimitiveTypePropertyValueOrDefault<String>("Text");
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::PopupUIComponent>();
+							changed |= ImGuiUtil::DrawTextControl("Text", component.Text); updateContextAfterDrawControlCall(drawInspectorContext);
 							return changed;
 						}
 					}
@@ -984,6 +1072,10 @@ namespace DYE::DYEditor
 		TypeRegistry::RegisterSystem("Render Triangle System", &_RenderTriangleSystem);
 
 		// System located in include/Systems/KillSystems.h
+		static DYE::DYEditor::CountdownKillTimerSystem _CountdownKillTimerSystem;
+		TypeRegistry::RegisterSystem("Countdown Kill Timer System", &_CountdownKillTimerSystem);
+
+		// System located in include/Systems/KillSystems.h
 		static DYE::DYEditor::GameEffectOnKilledSystem _GameEffectOnKilledSystem;
 		TypeRegistry::RegisterSystem("Game Effect On Killed System", &_GameEffectOnKilledSystem);
 
@@ -1002,6 +1094,10 @@ namespace DYE::DYEditor
 		// System located in include/Systems/UISystems.h
 		static DYE::DYEditor::TeamPointsUISystem _TeamPointsUISystem;
 		TypeRegistry::RegisterSystem("Team Points UI System", &_TeamPointsUISystem);
+
+		// System located in include/Systems/UISystems.h
+		static DYE::DYEditor::DrawPopupUISystem _DrawPopupUISystem;
+		TypeRegistry::RegisterSystem("Draw Popup UI System", &_DrawPopupUISystem);
 
 		// System located in include/Systems/UISystems.h
 		static DYE::DYEditor::HowitzerWindowSystem _HowitzerWindowSystem;

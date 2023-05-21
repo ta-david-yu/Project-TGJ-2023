@@ -86,6 +86,12 @@ namespace DYE::DYEditor
 					projectile.TravelSpeedPerSecond = 7.5f;
 
 					newRocketEntity.AddComponent<KillRocketTargetOnOverlap>();
+
+					auto &killableComponent = newRocketEntity.AddComponent<KillableComponent>();
+					killableComponent.TeamID = ENEMY_TEAM;
+
+					auto &multiplyPointOnKilled = newRocketEntity.AddComponent<MultiplyPointsOfTeamOnKilledComponent>();
+					multiplyPointOnKilled.TeamIDToMultiplyPoints = PLAYER_TEAM;
 				}
 			}
 		}

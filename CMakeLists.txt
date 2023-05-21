@@ -45,7 +45,8 @@ set(HEADER_FILES
         include/Components/EnvironmentComponents.h
         include/Systems/EnvironmentSystems.h
         include/Systems/GameStateSystems.h
-        include/Components/GameStateComponents.h)
+        include/Components/GameStateComponents.h
+        include/Components/MiscUIComponents.h)
 
 set(INCLUDE_DIRS
         include
