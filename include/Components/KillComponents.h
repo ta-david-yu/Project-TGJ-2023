@@ -116,4 +116,9 @@ namespace DYE::DYEditor
 
 		DYE::Float Timer = 0.0f;
 	};
+
+	DYE_COMPONENT("Invincible Component", DYE::DYEditor::InvincibleComponent)
+	struct InvincibleComponent
+	{
+	};
 }

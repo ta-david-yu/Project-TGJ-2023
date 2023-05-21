@@ -50,19 +50,19 @@ namespace DYE::DYEditor
 			case KeyCode::NumpadMinus:
 				s_Data.IsSliderPulledPressed = true;
 				break;
-			case KeyCode::Numpad1:
+			case KeyCode::Num1:
 				s_Data.IsSimon1Pressed = true;
 				break;
-			case KeyCode::Numpad2:
+			case KeyCode::Num2:
 				s_Data.IsSimon2Pressed = true;
 				break;
-			case KeyCode::Numpad3:
+			case KeyCode::Num3:
 				s_Data.IsSimon3Pressed = true;
 				break;
-			case KeyCode::Numpad4:
+			case KeyCode::Num4:
 				s_Data.IsShellInPressed = true;
 				break;
-			case KeyCode::Numpad5:
+			case KeyCode::Num5:
 				s_Data.IsShellOutPressed = true;
 				break;
 		}

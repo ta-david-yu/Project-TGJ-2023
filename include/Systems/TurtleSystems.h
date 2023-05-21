@@ -51,6 +51,19 @@ namespace DYE::DYEditor
 					tankMovement.InputBuffer = moveVertical;
 				}
 
+				if (INPUT.GetKeyDown(KeyCode::I))
+				{
+					Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
+					if (wrappedEntity.HasComponent<InvincibleComponent>())
+					{
+						wrappedEntity.RemoveComponent<InvincibleComponent>();
+					}
+					else
+					{
+						wrappedEntity.AddComponent<InvincibleComponent>();
+					}
+				}
+
 				//float const angleDegree = glm::degrees(angleRadian);
 				//transform.Rotation = glm::quat {glm::vec3 {0, 0, angleRadian}};
 			}

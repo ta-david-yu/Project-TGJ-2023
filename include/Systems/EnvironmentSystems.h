@@ -205,6 +205,7 @@ namespace DYE::DYEditor
 
 					// Hit something! Try to kill it.
 					Entity wrappedTargetEntity = world.WrapIdentifierIntoEntity(targetEntity);
+
 					wrappedTargetEntity.AddOrGetComponent<KilledComponent>();
 
 					hitSomething = true;

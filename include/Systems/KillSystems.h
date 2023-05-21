@@ -175,7 +175,15 @@ namespace DYE::DYEditor
 				for (auto entity: view)
 				{
 					Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
-					world.DestroyEntityAndChildren(wrappedEntity);
+
+					if (wrappedEntity.HasComponent<InvincibleComponent>())
+					{
+						wrappedEntity.RemoveComponent<KilledComponent>();
+					}
+					else
+					{
+						world.DestroyEntityAndChildren(wrappedEntity);
+					}
 				}
 			}
 		}
