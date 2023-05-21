@@ -178,7 +178,7 @@ Name = 'GameScene'
     Type = 'Sprite Renderer'
 
     [[Entities.Components]]
-    FullSpeedPerSecond = 3.0
+    FullSpeedPerSecond = 5.0
     InputBuffer = 0.0
     Type = 'Tank Movement Component'
 
@@ -493,6 +493,14 @@ Type = 'Draw Popup UI System'
 [[Systems]]
 IsEnabled = true
 Type = 'Show GameOver UI If Timer Up System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Reloader Window System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Turtle Status Window System'
 
 [[Systems]]
 IsEnabled = true
