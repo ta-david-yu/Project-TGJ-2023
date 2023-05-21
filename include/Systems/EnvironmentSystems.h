@@ -74,8 +74,8 @@ namespace DYE::DYEditor
 					auto &collider = newRocketEntity.AddComponent<CircleColliderComponent>();
 					collider.Radius = 0.75f;
 
-					auto &drawCollider = newRocketEntity.AddComponent<DrawCircleColliderComponent>();
-					drawCollider.Color = Color::Red;
+					//auto &drawCollider = newRocketEntity.AddComponent<DrawCircleColliderComponent>();
+					//drawCollider.Color = Color::Red;
 
 					auto &spriteRenderer = newRocketEntity.AddComponent<SpriteRendererComponent>();
 					spriteRenderer.Texture = Texture2D::Create("assets//Textures//Rocket.png");

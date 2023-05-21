@@ -227,7 +227,39 @@ namespace DYE::DYEditor
 		ExecutionPhase GetPhase() const override { return ExecutionPhase::ImGui; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
 		{
+			auto view = world.GetView<HowitzerAimingComponent>();
+			for (auto entity : view)
+			{
+				HowitzerAimingComponent &howitzerAiming = view.get<HowitzerAimingComponent>(entity);
 
+				ImGuiIO& io = ImGui::GetIO();
+				ImGuiWindowFlags windowFlags =
+					ImGuiWindowFlags_NoResize |
+					ImGuiWindowFlags_NoCollapse |
+					ImGuiWindowFlags_NoFocusOnAppearing;
+
+				const ImGuiViewport* viewport = ImGui::GetMainViewport();
+				ImVec2 workPos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
+				ImVec2 workSize = viewport->WorkSize;
+
+				ImGui::SetNextWindowSize(ImVec2(350, 800), ImGuiCond_Always);
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 25);
+				if (ImGui::Begin("Loader Interface", nullptr, windowFlags))
+				{
+					glm::vec2 const topLeftPos = {ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y};
+					//ImGui::GetWindowDrawList().
+					if (howitzerAiming.IsLoadedWithAmmo)
+					{
+						ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Ammo Loaded");
+					}
+					else
+					{
+						ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Ammo Not Loaded");
+					}
+				}
+				ImGui::End();
+				ImGui::PopStyleVar();
+			}
 		}
 	};
 
