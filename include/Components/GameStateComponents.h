@@ -26,6 +26,11 @@ namespace DYE::DYEditor
 		DYE::Int32 Points = 0;
 	};
 
+	DYE_COMPONENT("Death Contribute Points", DYE::DYEditor::DeathContributePointsComponent)
+	struct DeathContributePointsComponent
+	{
+	};
+
 	DYE_COMPONENT("Team Points UI", DYE::DYEditor::TeamPointsUIComponent)
 	struct TeamPointsUIComponent
 	{

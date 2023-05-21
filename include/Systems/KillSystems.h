@@ -76,6 +76,7 @@ namespace DYE::DYEditor
 						if (!wrappedKillableEntity.HasComponent<KilledComponent>())
 						{
 							wrappedKillableEntity.AddComponent<KilledComponent>();
+							wrappedKillableEntity.AddComponent<DeathContributePointsComponent>();
 						}
 					}
 
@@ -114,7 +115,7 @@ namespace DYE::DYEditor
 			// Add points on killed.
 			{
 				auto teamPointView = world.GetView<TeamPointsComponent>();
-				auto view = world.GetView<KilledComponent, AddPointsToTeamOnKilledComponent>();
+				auto view = world.GetView<KilledComponent, AddPointsToTeamOnKilledComponent, DeathContributePointsComponent>();
 				for (auto entity: view)
 				{
 					auto &addPointsToTeam = view.get<AddPointsToTeamOnKilledComponent>(entity);
@@ -139,7 +140,7 @@ namespace DYE::DYEditor
 			// Multiply points on killed.
 			{
 				auto teamPointView = world.GetView<TeamPointsComponent>();
-				auto view = world.GetView<KilledComponent, MultiplyPointsOfTeamOnKilledComponent>();
+				auto view = world.GetView<KilledComponent, MultiplyPointsOfTeamOnKilledComponent, DeathContributePointsComponent>();
 				for (auto entity: view)
 				{
 					auto &multiplyPoints = view.get<MultiplyPointsOfTeamOnKilledComponent>(entity);

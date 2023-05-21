@@ -946,6 +946,33 @@ namespace DYE::DYEditor
 			);
 
 		// Component located in include/Components/GameStateComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::DeathContributePointsComponent>
+			(
+				"Death Contribute Points",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							entity.AddOrGetComponent<DYE::DYEditor::DeathContributePointsComponent>();
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							ImGui::Indent();
+							ImGui::TextUnformatted("The component doesn't have any properties (i.e. DYE_PROPERTY).");
+							ImGui::Unindent();
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/GameStateComponents.h
 		TypeRegistry::RegisterComponentType<DYE::DYEditor::TeamPointsUIComponent>
 			(
 				"Team Points UI",
