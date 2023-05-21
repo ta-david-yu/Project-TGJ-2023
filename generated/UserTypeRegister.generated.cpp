@@ -650,7 +650,7 @@ namespace DYE::DYEditor
 						{
 							auto& component = entity.AddOrGetComponent<DYE::DYEditor::AddPointsToTeamOnKilledComponent>();
 							component.TeamIDToAddTo = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("TeamIDToAddTo", PLAYER_TEAM);
-							component.Points = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("Points", 100.0f);
+							component.Points = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("Points", 100);
 							return DeserializationResult {};
 						},
 						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)

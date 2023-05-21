@@ -3,38 +3,6 @@ Name = 'GameScene'
 [[Entities]]
 
     [[Entities.Components]]
-    ClearColor = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
-    Depth = -1.0
-    FarClipDistance = 100.0
-    FiledOfView = 45.0
-    IsEnabled = true
-    IsOrthographic = true
-    ManualAspectRatio = 1.0
-    NearClipDistance = 0.10000000149011612
-    OrthographicSize = 55.0
-    TargetWindowIndex = 0
-    Type = 'Camera'
-    UseManualAspectRatio = false
-    Viewport = { Height = 1.0, Width = 1.0, X = 0.0, Y = 0.0 }
-    ViewportValueType = 'RelativeDimension'
-
-    [[Entities.Components]]
-    ID = '14823154286683154705'
-    Type = 'ID'
-
-    [[Entities.Components]]
-    Name = 'Camera'
-    Type = 'Name'
-
-    [[Entities.Components]]
-    Position = { x = 0.0, y = 0.0, z = 10.0 }
-    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
-    Scale = { x = 1.0, y = 1.0, z = 1.0 }
-    Type = 'Transform'
-
-[[Entities]]
-
-    [[Entities.Components]]
     Children = [ '464450504808488972', '12480995904241667077', '2366120016476398085', '4060298198878018107' ]
     Type = 'Children'
 
@@ -219,8 +187,8 @@ Name = 'GameScene'
     Type = 'Tank Rotation Component'
 
     [[Entities.Components]]
-    Position = { x = 1.5080525875091553, y = -1.3427181243896484, z = 0.0 }
-    Rotation = { w = 0.64321750402450562, x = 0.0, y = 0.0, z = 0.76568353176116943 }
+    Position = { x = 0.0, y = 0.0, z = 0.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
     Scale = { x = 1.0, y = 1.0, z = 1.0 }
     Type = 'Transform'
 
@@ -267,9 +235,143 @@ Name = 'GameScene'
     Type = 'Sprite Renderer'
 
     [[Entities.Components]]
-    Position = { x = 1.5080525875091553, y = -1.3427181243896484, z = 1.0 }
-    Rotation = { w = 0.35073298215866089, x = 0.0, y = 0.0, z = 0.93647551536560059 }
+    Position = { x = 0.0, y = 0.0, z = 1.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
     Scale = { x = 2.0, y = 0.30000001192092896, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    Children = [ '14823154286683154705', '3297477235037092900' ]
+    Type = 'Children'
+
+    [[Entities.Components]]
+    ID = '5159687427588696468'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    Name = 'Cameras'
+    Type = 'Name'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    ClearColor = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Depth = -1.0
+    FarClipDistance = 100.0
+    FiledOfView = 45.0
+    IsEnabled = true
+    IsOrthographic = true
+    ManualAspectRatio = 1.0
+    NearClipDistance = 0.10000000149011612
+    OrthographicSize = 55.0
+    TargetWindowIndex = 0
+    Type = 'Camera'
+    UseManualAspectRatio = false
+    Viewport = { Height = 1.0, Width = 1.0, X = 0.0, Y = 0.0 }
+    ViewportValueType = 'RelativeDimension'
+
+    [[Entities.Components]]
+    ID = '14823154286683154705'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    Name = 'Commander Camera'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    ParentGUID = '5159687427588696468'
+    Type = 'Parent'
+
+    [[Entities.Components]]
+    Position = { x = 0.0, y = 0.0, z = 10.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    Offset = { x = 0.0, y = 200.0, z = 0.0 }
+    Type = 'Aimer Window Component'
+
+    [[Entities.Components]]
+    ClearColor = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Depth = -1.0
+    FarClipDistance = 100.0
+    FiledOfView = 45.0
+    IsEnabled = true
+    IsOrthographic = true
+    ManualAspectRatio = 1.0
+    NearClipDistance = 0.10000000149011612
+    OrthographicSize = 55.0
+    TargetWindowIndex = 1
+    Type = 'Camera'
+    UseManualAspectRatio = false
+    Viewport = { Height = 1.0, Width = 1.0, X = 0.0, Y = 0.0 }
+    ViewportValueType = 'RelativeDimension'
+
+    [[Entities.Components]]
+    ID = '3297477235037092900'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    Name = 'Aimer Camera'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    ParentGUID = '5159687427588696468'
+    Type = 'Parent'
+
+    [[Entities.Components]]
+    Position = { x = 0.0, y = 200.0, z = 10.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    ID = '3889606548150455249'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    Name = 'Commander Grid'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Color = { w = 1.0, x = 1.0, y = 1.0, z = 1.0 }
+    IsEnabled = true
+    TextureAssetPath = 'assets\Textures\GridBackground.png'
+    Type = 'Sprite Renderer'
+
+    [[Entities.Components]]
+    Position = { x = 0.0, y = 0.0, z = 0.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 10.0, y = 10.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    ID = '12067055217210532655'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    Name = 'Aimer Grid'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Color = { w = 1.0, x = 1.0, y = 1.0, z = 1.0 }
+    IsEnabled = true
+    TextureAssetPath = 'assets\Textures\GridBackground.png'
+    Type = 'Sprite Renderer'
+
+    [[Entities.Components]]
+    Position = { x = 0.0, y = 200.0, z = 0.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 10.0, y = 10.0, z = 1.0 }
     Type = 'Transform'
 
 [[Systems]]
@@ -374,7 +476,11 @@ Type = 'Render Triangle System'
 
 [[Systems]]
 IsEnabled = true
-Type = 'Howitzer Window System'
+Type = 'Aimer Window System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Howitzer HUD System'
 
 [[Systems]]
 IsEnabled = true
@@ -411,3 +517,7 @@ Type = 'Close Window On TearDown System'
 [[Systems]]
 IsEnabled = true
 Type = 'Set Graphics On TearDown System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Howitzer Window System'

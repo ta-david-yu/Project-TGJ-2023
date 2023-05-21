@@ -76,7 +76,7 @@ namespace DYE::DYEditor
 		DYE::Int32 TeamIDToAddTo = PLAYER_TEAM;
 
 		DYE_PROPERTY()
-		DYE::Int32 Points = 100.0f;
+		DYE::Int32 Points = 100;
 	};
 
 	DYE_COMPONENT("Multiply Points Of Team On Killed Component", DYE::DYEditor::MultiplyPointsOfTeamOnKilledComponent)
