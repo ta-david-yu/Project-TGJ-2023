@@ -342,6 +342,10 @@ Type = 'Check If GameOver System'
 
 [[Systems]]
 IsEnabled = true
+Type = 'Load Different Scenes System'
+
+[[Systems]]
+IsEnabled = true
 Type = 'Explode Animation System'
 
 [[Systems]]

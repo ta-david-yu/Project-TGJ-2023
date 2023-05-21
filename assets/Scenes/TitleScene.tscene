@@ -1,0 +1,69 @@
+Name = 'TitleScene'
+
+[[Entities]]
+
+    [[Entities.Components]]
+    ClearColor = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Depth = -1.0
+    FarClipDistance = 100.0
+    FiledOfView = 45.0
+    IsEnabled = true
+    IsOrthographic = true
+    ManualAspectRatio = 1.0
+    NearClipDistance = 0.10000000149011612
+    OrthographicSize = 10.0
+    TargetWindowIndex = 0
+    Type = 'Camera'
+    UseManualAspectRatio = false
+    Viewport = { Height = 1.0, Width = 1.0, X = 0.0, Y = 0.0 }
+    ViewportValueType = 'RelativeDimension'
+
+    [[Entities.Components]]
+    ID = '10423597789160109939'
+    Type = 'ID'
+
+    [[Entities.Components]]
+    Name = 'Camera'
+    Type = 'Name'
+
+    [[Entities.Components]]
+    Position = { x = 0.0, y = 0.0, z = 10.0 }
+    Rotation = { w = 1.0, x = 0.0, y = 0.0, z = 0.0 }
+    Scale = { x = 1.0, y = 1.0, z = 1.0 }
+    Type = 'Transform'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Play Audio Source On Initialize System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Create Window On Initialize System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Register Camera System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Render 2D Sprite System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Title Tutorial UI System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Audio System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Modify Window System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Execute Load Scene Command System'
+
+[[Systems]]
+IsEnabled = true
+Type = 'Close Window On TearDown System'
