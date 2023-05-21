@@ -172,4 +172,25 @@ namespace DYE::DYEditor
 			}
 		}
 	};
+
+
+	DYE_SYSTEM("Load Different Scenes System", DYE::DYEditor::LoadDifferentScenesSystem)
+	struct LoadDifferentScenesSystem final : public SystemBase
+	{
+		ExecutionPhase GetPhase() const override { return ExecutionPhase::Update; }
+		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
+		{
+			if (INPUT.GetKeyDown(KeyCode::Escape))
+			{
+				auto &loadSceneComponent = world.CreateCommandEntity().AddComponent<LoadSceneComponent>();
+				loadSceneComponent.SceneAssetPath = "assets//Scenes//TitleScene.tscene";
+			}
+
+			if (INPUT.GetKeyDown(KeyCode::F1))
+			{
+				auto &loadSceneComponent = world.CreateCommandEntity().AddComponent<LoadSceneComponent>();
+				loadSceneComponent.SceneAssetPath = "assets//Scenes//GameScene.tscene";
+			}
+		}
+	};
 }

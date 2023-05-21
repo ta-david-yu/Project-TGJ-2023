@@ -146,6 +146,11 @@ namespace DYE::DYEditor
 						// Used up the ammo.
 						howitzerAiming.IsLoadedWithAmmo = false;
 					}
+
+					if (InputEventBuffingLayer::IsShellInPressed())
+					{
+						howitzerAiming.IsLoadedWithAmmo = true;
+					}
 				}
 			}
 		}

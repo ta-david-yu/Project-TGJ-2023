@@ -12,6 +12,7 @@
 #include "Math/EasingFunctions.h"
 #include "Math/PrimitiveTest.h"
 #include "ImGui/ImGuiUtil.h"
+#include "InputEventBuffingLayer.h"
 
 #include "Graphics/DebugDraw.h"
 
@@ -120,6 +121,62 @@ namespace DYE::DYEditor
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
 		{
 
+		}
+	};
+
+
+	DYE_SYSTEM("Title Tutorial UI System", DYE::DYEditor::TitleTutorialUISystem)
+	struct TitleTutorialUISystem final : public SystemBase
+	{
+		ExecutionPhase GetPhase() const final { return ExecutionPhase::ImGui; }
+		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
+		{
+			ImGuiIO &io = ImGui::GetIO();
+			ImGuiWindowFlags windowFlags =
+				ImGuiWindowFlags_NoDecoration |
+				ImGuiWindowFlags_AlwaysAutoResize |
+				ImGuiWindowFlags_NoSavedSettings |
+				ImGuiWindowFlags_NoFocusOnAppearing |
+				ImGuiWindowFlags_NoNav |
+				ImGuiWindowFlags_NoMove;
+
+			const ImGuiViewport *viewport = ImGui::GetMainViewport();
+			ImVec2 workPos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
+			ImVec2 workSize = viewport->WorkSize;
+
+			ImVec2 windowPos = ImVec2(workPos.x + workSize.x * 0.5f, workPos.y + workSize.y * 0.5f);
+			ImVec2 windowPivot = ImVec2(0.5f, 0.5f);
+
+			ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPivot);
+			ImGui::SetNextWindowBgAlpha(0.35f);
+
+			if (ImGui::Begin("Title Tutorial UI", nullptr, windowFlags))
+			{
+				ImGui::Separator();
+
+				ImGui::SeparatorText("Commander");
+				ImGui::TextWrapped("Guide your crew to dodge red rockets & hit green circle objectives.");
+
+				ImGui::SeparatorText("Aimer");
+				ImGui::TextWrapped("Follow the commander's order to adjust the aim.");
+
+				ImGui::SeparatorText("Reloader");
+				ImGui::TextWrapped("Fire & reload the ammo on commander's order.");
+
+				ImGui::SeparatorText("Turtle");
+				ImGui::TextWrapped("Follow the commander's order to move around. Rotate to turn & lean forward/backward to move.");
+
+				ImGui::Separator();
+				ImGui::TextUnformatted("Press Fire Button To Start");
+			}
+			ImGui::End();
+
+			// Check input logic, if we should load the new scene.
+			if (InputEventBuffingLayer::IsFirePressed())
+			{
+				auto &loadSceneComponent = world.CreateCommandEntity().AddComponent<LoadSceneComponent>();
+				loadSceneComponent.SceneAssetPath = "assets//Scenes//GameScene.tscene";
+			}
 		}
 	};
 }

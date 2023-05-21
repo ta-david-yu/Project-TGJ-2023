@@ -1225,6 +1225,10 @@ namespace DYE::DYEditor
 		static DYE::DYEditor::HowitzerWindowSystem _HowitzerWindowSystem;
 		TypeRegistry::RegisterSystem("Howitzer Window System", &_HowitzerWindowSystem);
 
+		// System located in include/Systems/UISystems.h
+		static DYE::DYEditor::TitleTutorialUISystem _TitleTutorialUISystem;
+		TypeRegistry::RegisterSystem("Title Tutorial UI System", &_TitleTutorialUISystem);
+
 		// System located in include/Systems/EnvironmentSystems.h
 		static DYE::DYEditor::RocketSpawnerSystem _RocketSpawnerSystem;
 		TypeRegistry::RegisterSystem("Rocket Spawner System", &_RocketSpawnerSystem);
@@ -1260,6 +1264,10 @@ namespace DYE::DYEditor
 		// System located in include/Systems/GameStateSystems.h
 		static DYE::DYEditor::ShowGameOverUIIfTimerUpSystem _ShowGameOverUIIfTimerUpSystem;
 		TypeRegistry::RegisterSystem("Show GameOver UI If Timer Up System", &_ShowGameOverUIIfTimerUpSystem);
+
+		// System located in include/Systems/GameStateSystems.h
+		static DYE::DYEditor::LoadDifferentScenesSystem _LoadDifferentScenesSystem;
+		TypeRegistry::RegisterSystem("Load Different Scenes System", &_LoadDifferentScenesSystem);
 
 	}
 
