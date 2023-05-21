@@ -860,6 +860,73 @@ namespace DYE::DYEditor
 					}
 			);
 
+		// Component located in include/Components/EnvironmentComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::ObjectiveSpawnerComponent>
+			(
+				"Objective Spawner",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::ObjectiveSpawnerComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("InitialSpawnInterval", component.InitialSpawnInterval);
+							serializedComponent.SetPrimitiveTypePropertyValue("SpawnIntervalRandomOffset", component.SpawnIntervalRandomOffset);
+							serializedComponent.SetPrimitiveTypePropertyValue("MaxObjectivesOnField", component.MaxObjectivesOnField);
+							serializedComponent.SetPrimitiveTypePropertyValue("SpawnStartingRadius", component.SpawnStartingRadius);
+							serializedComponent.SetPrimitiveTypePropertyValue("SpawnTimer", component.SpawnTimer);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::ObjectiveSpawnerComponent>();
+							component.InitialSpawnInterval = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("InitialSpawnInterval", 20.0f);
+							component.SpawnIntervalRandomOffset = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("SpawnIntervalRandomOffset", 3);
+							component.MaxObjectivesOnField = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("MaxObjectivesOnField", 3);
+							component.SpawnStartingRadius = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("SpawnStartingRadius", 20);
+							component.SpawnTimer = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("SpawnTimer", 20.0f);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::ObjectiveSpawnerComponent>();
+							changed |= ImGuiUtil::DrawFloatControl("InitialSpawnInterval", component.InitialSpawnInterval); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("SpawnIntervalRandomOffset", component.SpawnIntervalRandomOffset); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawIntControl("MaxObjectivesOnField", component.MaxObjectivesOnField); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("SpawnStartingRadius", component.SpawnStartingRadius); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("SpawnTimer", component.SpawnTimer); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/EnvironmentComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::ObjectiveComponent>
+			(
+				"Objective",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							entity.AddOrGetComponent<DYE::DYEditor::ObjectiveComponent>();
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							ImGui::Indent();
+							ImGui::TextUnformatted("The component doesn't have any properties (i.e. DYE_PROPERTY).");
+							ImGui::Unindent();
+							return changed;
+						}
+					}
+			);
+
 		// Component located in include/Components/GameStateComponents.h
 		TypeRegistry::RegisterComponentType<DYE::DYEditor::PlayerComponent>
 			(
@@ -1161,6 +1228,10 @@ namespace DYE::DYEditor
 		// System located in include/Systems/EnvironmentSystems.h
 		static DYE::DYEditor::RocketSpawnerSystem _RocketSpawnerSystem;
 		TypeRegistry::RegisterSystem("Rocket Spawner System", &_RocketSpawnerSystem);
+
+		// System located in include/Systems/EnvironmentSystems.h
+		static DYE::DYEditor::ObjectiveSpawnerSystem _ObjectiveSpawnerSystem;
+		TypeRegistry::RegisterSystem("Objective Spawner System", &_ObjectiveSpawnerSystem);
 
 		// System located in include/Systems/EnvironmentSystems.h
 		static DYE::DYEditor::CheckRocketHitSystem _CheckRocketHitSystem;

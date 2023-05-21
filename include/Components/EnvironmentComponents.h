@@ -44,4 +44,28 @@ namespace DYE::DYEditor
 	struct RocketTargetComponent
 	{
 	};
+
+	DYE_COMPONENT("Objective Spawner", DYE::DYEditor::ObjectiveSpawnerComponent)
+	struct ObjectiveSpawnerComponent
+	{
+		DYE_PROPERTY()
+		DYE::Float InitialSpawnInterval = 20.0f;
+
+		DYE_PROPERTY()
+		DYE::Float SpawnIntervalRandomOffset = 3;
+
+		DYE_PROPERTY()
+		DYE::Int32 MaxObjectivesOnField = 3;
+
+		DYE_PROPERTY()
+		DYE::Float SpawnStartingRadius = 20;
+
+		DYE_PROPERTY()
+		DYE::Float SpawnTimer = 20.0f;
+	};
+
+	DYE_COMPONENT("Objective", DYE::DYEditor::ObjectiveComponent)
+	struct ObjectiveComponent
+	{
+	};
 }

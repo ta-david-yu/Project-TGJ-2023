@@ -95,6 +95,67 @@ namespace DYE::DYEditor
 				}
 			}
 		}
+	};
+
+	DYE_SYSTEM("Objective Spawner System", DYE::DYEditor::ObjectiveSpawnerSystem)
+	struct ObjectiveSpawnerSystem final : public SystemBase
+	{
+		ExecutionPhase GetPhase() const override
+		{
+			return ExecutionPhase::Update;
+		}
+
+		void Execute(World &world, DYE::DYEditor::ExecuteParameters params) override
+		{
+			auto existingObjectiveView = world.GetView<ObjectiveComponent>();
+			int const numberOfObjectives = existingObjectiveView.size();
+
+			auto view = world.GetView<ObjectiveSpawnerComponent, TransformComponent>();
+			for (auto entity : view)
+			{
+				auto &objectiveSpawner = view.get<ObjectiveSpawnerComponent>(entity);
+				auto &spawnerTransform = view.get<TransformComponent>(entity);
+
+				if (numberOfObjectives >= objectiveSpawner.MaxObjectivesOnField)
+				{
+					// Reach max number of objectives. skip it.
+					continue;
+				}
+
+				objectiveSpawner.SpawnTimer -= TIME.DeltaTime();
+				if (objectiveSpawner.SpawnTimer > 0)
+				{
+					continue;
+				}
+
+				// TODO: randomize Next spawn time.
+				float nextSpawnTime = objectiveSpawner.InitialSpawnInterval;
+				objectiveSpawner.SpawnTimer += nextSpawnTime;
+
+				// Start position.
+				glm::vec2 startPosition = spawnerTransform.Position;
+				startPosition += glm::diskRand(objectiveSpawner.SpawnStartingRadius);
+
+				// Spawn objective.
+				Entity newObjectiveEntity = world.CreateEntity("Objective");
+				auto &newObjectiveTransform = newObjectiveEntity.AddComponent<TransformComponent>();
+				newObjectiveTransform.Position = {startPosition, 0};
+
+				auto &collider = newObjectiveEntity.AddComponent<CircleColliderComponent>();
+				collider.Radius = 1.40f;
+
+				auto &drawCollider = newObjectiveEntity.AddComponent<DrawCircleColliderComponent>();
+				drawCollider.Color = Color::Green;
+
+				auto &killableComponent = newObjectiveEntity.AddComponent<KillableComponent>();
+				killableComponent.TeamID = ENEMY_TEAM;
+
+				auto &multiplyPointOnKilled = newObjectiveEntity.AddComponent<AddPointsToTeamOnKilledComponent>();
+				multiplyPointOnKilled.TeamIDToAddTo = PLAYER_TEAM;
+
+				newObjectiveEntity.AddComponent<ObjectiveComponent>();
+			}
+		}
 
 	};
 

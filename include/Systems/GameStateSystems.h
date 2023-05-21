@@ -151,7 +151,7 @@ namespace DYE::DYEditor
 				ImVec2 windowPivot = ImVec2(0.5f, 0.5f);
 
 				ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPivot);
-				ImGui::SetNextWindowBgAlpha(0.35f);
+				ImGui::SetNextWindowBgAlpha(0.8f);
 
 				if (ImGui::Begin("Game Over Window", nullptr, windowFlags))
 				{
