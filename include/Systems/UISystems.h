@@ -152,29 +152,38 @@ namespace DYE::DYEditor
 				if (ImGui::Begin("Howitzer Loaded State", nullptr, windowFlags))
 				{
 					ImGui::SetWindowFontScale(2.0f);
+					ImVec4 codeColor(1, 1, 1, 1);
 					auto tryGetShell = wrappedEntity.TryGetComponent<ShellComponent>();
 					if (!tryGetShell.has_value())
 					{
-						ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Please load a new shell.");
+						codeColor = ImVec4(1.0f, 0.5f, 0.5f, 1.0f);
+						ImGui::TextColored(codeColor, "Please load a new shell.");
 					}
 					else
 					{
 						ShellComponent &shell = tryGetShell.value();
 						if (!shell.HasAmmo)
 						{
-							ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "The shell is empty. Please load a new shell");
+							codeColor = ImVec4(1.0f, 0.5f, 0.5f, 1.0f);
+							ImGui::TextColored(codeColor, "The shell is empty.");
+							ImGui::TextColored(codeColor, "Please unload the shell.");
 						}
 						else if (!shell.IsOperated())
 						{
-							ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Press the button sequence to initialize the shell.");
+							codeColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+							ImGui::TextColored(codeColor, "Press all the buttons to initialize the shell.");
 						}
 						else if (shell.IsOperated() && !shell.ActivationSucceed)
 						{
-							ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "The shell failed to initialize. Please load a new shell.");
+							codeColor = ImVec4(1.0f, 0.5f, 0.5f, 1.0f);
+							ImGui::TextColored(codeColor, "The shell failed to initialize.");
+							ImGui::TextColored(codeColor, "Please unload the shell.");
 						}
 						else if (shell.IsOperated() && shell.ActivationSucceed)
 						{
-							ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "The shell is loaded. Press button to fire.");
+							codeColor = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
+							ImGui::TextColored(codeColor, "The shell is loaded.");
+							ImGui::TextColored(codeColor, "Press button to fire.");
 						}
 					}
 				}
@@ -261,38 +270,104 @@ namespace DYE::DYEditor
 				ImVec2 workPos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
 				ImVec2 workSize = viewport->WorkSize;
 
-				ImGui::SetNextWindowSize(ImVec2(350, 800), ImGuiCond_Always);
+				ImGui::SetNextWindowSize(ImVec2(450, 800), ImGuiCond_Always);
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 25);
 				if (ImGui::Begin("Loader Interface", nullptr, windowFlags))
 				{
-					ImGui::SetWindowFontScale(2.0f);
 					glm::vec2 const topLeftPos = {ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y};
-					//ImGui::GetWindowDrawList().
+
+					ImGui::SetWindowFontScale(1.5f);
+
+					bool highlightTube = false;
+					bool highlightButtonBox = false;
+					bool highlightFireButton = false;
+					bool highlightOperationButtons = false;
+
+					bool button1 = false;
+					bool button2 = false;
+					bool button3 = false;
+
+					ImVec4 codeColor(1, 1, 1, 1);
 					auto tryGetShell = wrappedEntity.TryGetComponent<ShellComponent>();
 					if (!tryGetShell.has_value())
 					{
-						ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Please load a new shell.");
+						codeColor = ImVec4(1.0f, 0.5f, 0.5f, 1.0f);
+						ImGui::TextColored(codeColor, "Please load a new shell.");
+						highlightTube = true;
 					}
 					else
 					{
 						ShellComponent &shell = tryGetShell.value();
+						button1 = shell.IsButton1Operated;
+						button2 = shell.IsButton2Operated;
+						button3 = shell.IsButton3Operated;
+
 						if (!shell.HasAmmo)
 						{
-							ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "The shell is empty. Please load a new shell");
+							codeColor = ImVec4(1.0f, 0.5f, 0.5f, 1.0f);
+							ImGui::TextColored(codeColor, "The shell is empty.");
+							ImGui::TextColored(codeColor, "Please unload the shell.");
+							highlightTube = true;
 						}
 						else if (!shell.IsOperated())
 						{
-							ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Press all the buttons to initialize the shell.");
+							codeColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+							ImGui::TextColored(codeColor, "Press all the buttons");
+							ImGui::TextColored(codeColor, "to initialize the shell.");
+							//highlightButtonBox = true;
+							highlightOperationButtons = true;
 						}
 						else if (shell.IsOperated() && !shell.ActivationSucceed)
 						{
-							ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "The shell failed to initialize. Please load a new shell.");
+							codeColor = ImVec4(1.0f, 0.5f, 0.5f, 1.0f);
+							ImGui::TextColored(codeColor, "The shell failed to initialize.");
+							ImGui::TextColored(codeColor, "Please unload the shell.");
+							highlightTube = true;
 						}
 						else if (shell.IsOperated() && shell.ActivationSucceed)
 						{
-							ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "The shell is loaded. Press button to fire.");
+							codeColor = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);
+							ImGui::TextColored(codeColor, "The shell is loaded.");
+							ImGui::TextColored(codeColor, "Press button to fire.");
+							//highlightButtonBox = true;
+							highlightFireButton = true;
 						}
 					}
+
+					ImDrawList *pDrawList = ImGui::GetWindowDrawList();
+
+					ImU32 highlightColor = ImGui::GetColorU32(ImVec4(0, 1, 0, 1));
+					ImU32 disabledColor = ImGui::GetColorU32(ImVec4(1, 1, 1, 0.8f));
+
+					// Draw button box
+					glm::vec2 buttonBoxMin = topLeftPos + glm::vec2(100, 500);
+					glm::vec2 buttonBoxMax = topLeftPos + glm::vec2(250, 700);
+					pDrawList->AddRect(ImVec2(buttonBoxMin.x, buttonBoxMin.y), ImVec2(buttonBoxMax.x, buttonBoxMax.y),
+									   highlightButtonBox? highlightColor : disabledColor);
+
+					// Draw tube
+					glm::vec2 tubeMin = topLeftPos + glm::vec2(270, 100);
+					glm::vec2 tubeMax = topLeftPos + glm::vec2(350, 700);
+					pDrawList->AddRect(ImVec2(tubeMin.x, tubeMin.y), ImVec2(tubeMax.x, tubeMax.y),
+									   highlightTube? highlightColor : disabledColor);
+
+					// Draw fire button
+					glm::vec2 fireButtonPos = (buttonBoxMin + buttonBoxMax) * 0.5f;
+					float const radius = 20;
+					pDrawList->AddCircle(ImVec2(fireButtonPos.x, fireButtonPos.y), radius,
+										 highlightFireButton? highlightColor : disabledColor);
+
+					// Draw sequence buttons
+					glm::vec2 button1Pos = buttonBoxMin + glm::vec2(-30, 50);
+					glm::vec2 button2Pos = buttonBoxMin + glm::vec2(-30, 150);
+					glm::vec2 button3Pos = fireButtonPos + glm::vec2(0, 120);
+					float const smallBtnRadius = 10;
+					pDrawList->AddCircle(ImVec2(button1Pos.x, button1Pos.y), smallBtnRadius,
+										 highlightOperationButtons && !button1? highlightColor : disabledColor);
+					pDrawList->AddCircle(ImVec2(button2Pos.x, button2Pos.y), smallBtnRadius,
+										 highlightOperationButtons && !button2? highlightColor : disabledColor);
+					pDrawList->AddCircle(ImVec2(button3Pos.x, button3Pos.y), smallBtnRadius,
+										 highlightOperationButtons && !button3? highlightColor : disabledColor);
 				}
 				ImGui::End();
 				ImGui::PopStyleVar();
@@ -323,12 +398,11 @@ namespace DYE::DYEditor
 				ImVec2 workSize = viewport->WorkSize;
 
 				float const paddingY = 10;
-				ImVec2 windowPos = ImVec2(workPos.x + workSize.x * 0.5f, workPos.y + workSize.y - paddingY);
-				ImVec2 windowPivot = ImVec2(0.5f, 1);
+				ImVec2 windowPos = ImVec2(workPos.x + workSize.x * 0.5f, workPos.y + paddingY);
+				ImVec2 windowPivot = ImVec2(0.5f, 0);
 
 				ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPivot);
-				ImGui::SetNextWindowBgAlpha(0.35f);
-
+				ImGui::SetNextWindowBgAlpha(0.0f);
 				if (ImGui::Begin("SUPER TURTLE MODE", nullptr, windowFlags))
 				{
 					ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "SUPER TURTLE MODE");

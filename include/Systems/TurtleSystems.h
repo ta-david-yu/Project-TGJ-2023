@@ -28,6 +28,19 @@ namespace DYE::DYEditor
 				auto &targetRotation = view.get<TankRotationComponent>(entity);
 				auto &tankMovement = view.get<TankMovementComponent>(entity);
 
+				if (INPUT.GetKeyDown(KeyCode::I))
+				{
+					Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
+					if (wrappedEntity.HasComponent<InvincibleComponent>())
+					{
+						wrappedEntity.RemoveComponent<InvincibleComponent>();
+					}
+					else
+					{
+						wrappedEntity.AddComponent<InvincibleComponent>();
+					}
+				}
+
 				if (!INPUT.IsGamepadConnected(turtleInput.ControllerID))
 				{
 					continue;
@@ -49,19 +62,6 @@ namespace DYE::DYEditor
 				if (glm::abs(moveVertical) > 0.1f)
 				{
 					tankMovement.InputBuffer = moveVertical;
-				}
-
-				if (INPUT.GetKeyDown(KeyCode::I))
-				{
-					Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
-					if (wrappedEntity.HasComponent<InvincibleComponent>())
-					{
-						wrappedEntity.RemoveComponent<InvincibleComponent>();
-					}
-					else
-					{
-						wrappedEntity.AddComponent<InvincibleComponent>();
-					}
 				}
 
 				//float const angleDegree = glm::degrees(angleRadian);
