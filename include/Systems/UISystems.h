@@ -72,7 +72,7 @@ namespace DYE::DYEditor
 		{
 			auto popupView = world.GetView<PopupUIComponent>();
 			int popupCounter = 0;
-			float const popupOffsetY = 40;
+			float const popupOffsetY = 35;
 
 			ImGui::PushID("Popup UI");
 			for (auto popupEntity : popupView)

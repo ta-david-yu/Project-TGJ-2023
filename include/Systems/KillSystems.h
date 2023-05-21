@@ -129,7 +129,7 @@ namespace DYE::DYEditor
 							char textBuff[256] = "";
 							std::sprintf(textBuff, "+ %d = %d", addPointsToTeam.Points, teamPoints.Points);
 							Entity popupEntity = world.CreateEntity("Popup - Add Points");
-							popupEntity.AddComponent<KillTimerComponent>().Timer = 2.0f;
+							popupEntity.AddComponent<KillTimerComponent>().Timer = 3.0f;
 							popupEntity.AddComponent<PopupUIComponent>().Text = textBuff;
 						}
 					}
