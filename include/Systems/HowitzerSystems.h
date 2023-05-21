@@ -118,42 +118,80 @@ namespace DYE::DYEditor
 						}
 					}
 
-					if (InputEventBuffingLayer::IsFirePressed() ||
-						INPUT.GetKeyDown(howitzerInput.FireButton) ||
-						INPUT.GetGamepadButton(howitzerInput.ControllerID, howitzerInput.FireGamepadButton))
+					if (wrappedEntity.HasComponent<ShellComponent>())
 					{
-						bool const hasInfiniteAmmo = wrappedEntity.HasComponent<InfiniteAmmoComponent>();
+						ShellComponent &shell = wrappedEntity.GetComponent<ShellComponent>();
 
-						if (!hasInfiniteAmmo && !IgnoreAmmoCount && !howitzerAiming.IsLoadedWithAmmo)
+						if (InputEventBuffingLayer::IsSimon1Pressed() && !shell.IsButton1Operated)
 						{
-							continue;
+							shell.IsButton1Operated = true;
+							shell.SequenceNumber *= 2;
+							shell.CheckSequenceAndUpdate();
 						}
 
-						Entity firedProjectile = world.CreateEntity("Player Projectile");
-						auto &projectileTransform = firedProjectile.AddComponent<TransformComponent>();
-						projectileTransform.Position = transform.Position;
-						projectileTransform.Rotation = transform.Rotation;
+						if (InputEventBuffingLayer::IsSimon2Pressed() && !shell.IsButton2Operated)
+						{
+							shell.IsButton2Operated = true;
+							shell.SequenceNumber += 1;
+							shell.CheckSequenceAndUpdate();
+						}
 
-						// TODO: adjust parameters here.
-						auto &projectileMovement = firedProjectile.AddComponent<ProjectileMovementComponent>();
-						projectileMovement.MaxTravelDistance = howitzerAiming.CurrDistance;
+						if (InputEventBuffingLayer::IsSimon3Pressed() && !shell.IsButton3Operated)
+						{
+							shell.IsButton3Operated = true;
+							shell.SequenceNumber = shell.SequenceNumber * shell.SequenceNumber;
+							shell.CheckSequenceAndUpdate();
+						}
 
-						firedProjectile.AddComponent<RenderedOnAimerWindowComponent>();
+						if (InputEventBuffingLayer::IsFirePressed() ||
+							INPUT.GetKeyDown(howitzerInput.FireButton) ||
+							INPUT.GetGamepadButton(howitzerInput.ControllerID, howitzerInput.FireGamepadButton))
+						{
+							bool const hasInfiniteAmmo = wrappedEntity.HasComponent<InfiniteAmmoComponent>();
 
-						auto &explodeOnKilled = firedProjectile.AddComponent<ExplodeOnKilledComponent>();
-						explodeOnKilled.TeamIDToKill = ENEMY_TEAM;
-						explodeOnKilled.ExplodeRadius = 3.5f;
+							bool const superMode = hasInfiniteAmmo | IgnoreAmmoCount;
+							bool const canFire = superMode || (shell.HasAmmo & shell.ActivationSucceed);
+							if (!superMode && !canFire)
+							{
+								// Can't fire the ammo.
+								continue;
+							}
 
-						auto &spriteRenderer = firedProjectile.AddComponent<SpriteRendererComponent>();
-						spriteRenderer.Texture = Texture2D::Create("assets//Textures//Bullet.png");
+							Entity firedProjectile = world.CreateEntity("Player Projectile");
+							auto &projectileTransform = firedProjectile.AddComponent<TransformComponent>();
+							projectileTransform.Position = transform.Position;
+							projectileTransform.Rotation = transform.Rotation;
 
-						// Used up the ammo.
-						howitzerAiming.IsLoadedWithAmmo = false;
+							// TODO: adjust parameters here.
+							auto &projectileMovement = firedProjectile.AddComponent<ProjectileMovementComponent>();
+							projectileMovement.MaxTravelDistance = howitzerAiming.CurrDistance;
+
+							firedProjectile.AddComponent<RenderedOnAimerWindowComponent>();
+
+							auto &explodeOnKilled = firedProjectile.AddComponent<ExplodeOnKilledComponent>();
+							explodeOnKilled.TeamIDToKill = ENEMY_TEAM;
+							explodeOnKilled.ExplodeRadius = 3.5f;
+
+							auto &spriteRenderer = firedProjectile.AddComponent<SpriteRendererComponent>();
+							spriteRenderer.Texture = Texture2D::Create("assets//Textures//Bullet.png");
+
+							// Used up the ammo.
+							shell.HasAmmo = false;
+						}
 					}
 
-					if (InputEventBuffingLayer::IsShellInPressed())
+					if (InputEventBuffingLayer::IsShellInPressed() && !wrappedEntity.HasComponent<ShellComponent>())
 					{
-						howitzerAiming.IsLoadedWithAmmo = true;
+						static int targetSequences[] = { 441, 401, 484, 242, 201, 202 };
+
+						int rand = std::rand() % 6;
+						//wrappedEntity.AddComponent<ShellComponent>().TargetSequenceNumber = targetSequences[rand];
+						wrappedEntity.AddComponent<ShellComponent>().TargetSequenceNumber = targetSequences[0];
+					}
+
+					if (InputEventBuffingLayer::IsShellOutPressed())
+					{
+						wrappedEntity.RemoveComponent<ShellComponent>();
 					}
 
 					if (INPUT.GetKeyDown(KeyCode::I))

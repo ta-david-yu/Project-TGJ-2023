@@ -353,6 +353,52 @@ namespace DYE::DYEditor
 			);
 
 		// Component located in include/Components/HowitzerComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::ShellComponent>
+			(
+				"Shell",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+							auto const& component = entity.GetComponent<DYE::DYEditor::ShellComponent>();
+							serializedComponent.SetPrimitiveTypePropertyValue("HasAmmo", component.HasAmmo);
+							serializedComponent.SetPrimitiveTypePropertyValue("ActivationSucceed", component.ActivationSucceed);
+							serializedComponent.SetPrimitiveTypePropertyValue("SequenceNumber", component.SequenceNumber);
+							serializedComponent.SetPrimitiveTypePropertyValue("IsButton1Operated", component.IsButton1Operated);
+							serializedComponent.SetPrimitiveTypePropertyValue("IsButton2Operated", component.IsButton2Operated);
+							serializedComponent.SetPrimitiveTypePropertyValue("IsButton3Operated", component.IsButton3Operated);
+							serializedComponent.SetPrimitiveTypePropertyValue("TargetSequenceNumber", component.TargetSequenceNumber);
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							auto& component = entity.AddOrGetComponent<DYE::DYEditor::ShellComponent>();
+							component.HasAmmo = serializedComponent.GetPrimitiveTypePropertyValueOr<Bool>("HasAmmo", true);
+							component.ActivationSucceed = serializedComponent.GetPrimitiveTypePropertyValueOr<Bool>("ActivationSucceed", false);
+							component.SequenceNumber = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("SequenceNumber", 10);
+							component.IsButton1Operated = serializedComponent.GetPrimitiveTypePropertyValueOr<Bool>("IsButton1Operated", false);
+							component.IsButton2Operated = serializedComponent.GetPrimitiveTypePropertyValueOr<Bool>("IsButton2Operated", false);
+							component.IsButton3Operated = serializedComponent.GetPrimitiveTypePropertyValueOr<Bool>("IsButton3Operated", false);
+							component.TargetSequenceNumber = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("TargetSequenceNumber", 441);
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							auto& component = entity.GetComponent<DYE::DYEditor::ShellComponent>();
+							changed |= ImGuiUtil::DrawBoolControl("HasAmmo", component.HasAmmo); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawBoolControl("ActivationSucceed", component.ActivationSucceed); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawIntControl("SequenceNumber", component.SequenceNumber); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawBoolControl("IsButton1Operated", component.IsButton1Operated); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawBoolControl("IsButton2Operated", component.IsButton2Operated); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawBoolControl("IsButton3Operated", component.IsButton3Operated); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawIntControl("TargetSequenceNumber", component.TargetSequenceNumber); updateContextAfterDrawControlCall(drawInspectorContext);
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/HowitzerComponents.h
 		TypeRegistry::RegisterComponentType<DYE::DYEditor::ProjectileMovementComponent>
 			(
 				"Projectile Movement Component",

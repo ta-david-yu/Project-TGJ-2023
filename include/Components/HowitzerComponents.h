@@ -59,6 +59,38 @@ namespace DYE::DYEditor
 	{
 	};
 
+	DYE_COMPONENT("Shell", DYE::DYEditor::ShellComponent)
+	struct ShellComponent
+	{
+		DYE_PROPERTY()
+		DYE::Bool  HasAmmo = true;
+
+		DYE_PROPERTY()
+		DYE::Bool ActivationSucceed = false;
+		DYE_PROPERTY()
+		DYE::Int32 SequenceNumber = 10;
+		DYE_PROPERTY()
+		DYE::Bool IsButton1Operated = false;
+		DYE_PROPERTY()
+		DYE::Bool IsButton2Operated = false;
+		DYE_PROPERTY()
+		DYE::Bool IsButton3Operated = false;
+
+		DYE_PROPERTY()
+		DYE::Int32 TargetSequenceNumber = 441;
+
+		bool IsOperated() const { return IsButton1Operated && IsButton2Operated && IsButton3Operated; }
+		void CheckSequenceAndUpdate()
+		{
+			if (IsOperated())
+			{
+				DYE_LOG("Shell Succeed!");
+				ActivationSucceed = true;
+				//ActivationSucceed = SequenceNumber == TargetSequenceNumber;
+			}
+		}
+	};
+
 	DYE_COMPONENT("Projectile Movement Component", DYE::DYEditor::ProjectileMovementComponent)
 	struct ProjectileMovementComponent
 	{

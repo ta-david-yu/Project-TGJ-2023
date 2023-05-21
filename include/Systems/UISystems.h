@@ -125,6 +125,7 @@ namespace DYE::DYEditor
 			auto view = world.GetView<HowitzerAimingComponent>();
 			for (auto entity : view)
 			{
+				Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
 				HowitzerAimingComponent &howitzerAiming = view.get<HowitzerAimingComponent>(entity);
 
 				ImGuiIO& io = ImGui::GetIO();
@@ -151,13 +152,30 @@ namespace DYE::DYEditor
 				if (ImGui::Begin("Howitzer Loaded State", nullptr, windowFlags))
 				{
 					ImGui::SetWindowFontScale(2.0f);
-					if (howitzerAiming.IsLoadedWithAmmo)
+					auto tryGetShell = wrappedEntity.TryGetComponent<ShellComponent>();
+					if (!tryGetShell.has_value())
 					{
-						ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Ammo Loaded");
+						ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Please load a new shell.");
 					}
 					else
 					{
-						ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Ammo Not Loaded");
+						ShellComponent &shell = tryGetShell.value();
+						if (!shell.HasAmmo)
+						{
+							ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "The shell is empty. Please load a new shell");
+						}
+						else if (!shell.IsOperated())
+						{
+							ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Press the button sequence to initialize the shell.");
+						}
+						else if (shell.IsOperated() && !shell.ActivationSucceed)
+						{
+							ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "The shell failed to initialize. Please load a new shell.");
+						}
+						else if (shell.IsOperated() && shell.ActivationSucceed)
+						{
+							ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "The shell is loaded. Press button to fire.");
+						}
 					}
 				}
 				ImGui::End();
@@ -230,6 +248,7 @@ namespace DYE::DYEditor
 			auto view = world.GetView<HowitzerAimingComponent>();
 			for (auto entity : view)
 			{
+				Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
 				HowitzerAimingComponent &howitzerAiming = view.get<HowitzerAimingComponent>(entity);
 
 				ImGuiIO& io = ImGui::GetIO();
@@ -246,15 +265,33 @@ namespace DYE::DYEditor
 				ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 25);
 				if (ImGui::Begin("Loader Interface", nullptr, windowFlags))
 				{
+					ImGui::SetWindowFontScale(2.0f);
 					glm::vec2 const topLeftPos = {ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y};
 					//ImGui::GetWindowDrawList().
-					if (howitzerAiming.IsLoadedWithAmmo)
+					auto tryGetShell = wrappedEntity.TryGetComponent<ShellComponent>();
+					if (!tryGetShell.has_value())
 					{
-						ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "Ammo Loaded");
+						ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Please load a new shell.");
 					}
 					else
 					{
-						ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Ammo Not Loaded");
+						ShellComponent &shell = tryGetShell.value();
+						if (!shell.HasAmmo)
+						{
+							ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "The shell is empty. Please load a new shell");
+						}
+						else if (!shell.IsOperated())
+						{
+							ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), "Press all the buttons to initialize the shell.");
+						}
+						else if (shell.IsOperated() && !shell.ActivationSucceed)
+						{
+							ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "The shell failed to initialize. Please load a new shell.");
+						}
+						else if (shell.IsOperated() && shell.ActivationSucceed)
+						{
+							ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "The shell is loaded. Press button to fire.");
+						}
 					}
 				}
 				ImGui::End();
