@@ -326,6 +326,33 @@ namespace DYE::DYEditor
 			);
 
 		// Component located in include/Components/HowitzerComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::InfiniteAmmoComponent>
+			(
+				"Infinite Ammo",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							entity.AddOrGetComponent<DYE::DYEditor::InfiniteAmmoComponent>();
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							ImGui::Indent();
+							ImGui::TextUnformatted("The component doesn't have any properties (i.e. DYE_PROPERTY).");
+							ImGui::Unindent();
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/HowitzerComponents.h
 		TypeRegistry::RegisterComponentType<DYE::DYEditor::ProjectileMovementComponent>
 			(
 				"Projectile Movement Component",
@@ -1310,6 +1337,14 @@ namespace DYE::DYEditor
 		// System located in include/Systems/UISystems.h
 		static DYE::DYEditor::TitleTutorialUISystem _TitleTutorialUISystem;
 		TypeRegistry::RegisterSystem("Title Tutorial UI System", &_TitleTutorialUISystem);
+
+		// System located in include/Systems/UISystems.h
+		static DYE::DYEditor::ReloaderWindowSystem _ReloaderWindowSystem;
+		TypeRegistry::RegisterSystem("Reloader Window System", &_ReloaderWindowSystem);
+
+		// System located in include/Systems/UISystems.h
+		static DYE::DYEditor::TurtleStatusWindowSystem _TurtleStatusWindowSystem;
+		TypeRegistry::RegisterSystem("Turtle Status Window System", &_TurtleStatusWindowSystem);
 
 		// System located in include/Systems/UISystems.h
 		static DYE::DYEditor::AimerWindowSystem _AimerWindowSystem;

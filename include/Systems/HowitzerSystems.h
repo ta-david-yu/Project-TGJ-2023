@@ -49,6 +49,8 @@ namespace DYE::DYEditor
 				auto view = world.GetView<HowitzerInputComponent, HowitzerAimingComponent, TransformComponent>();
 				for (auto entity: view)
 				{
+					Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
+
 					auto howitzerInput = view.get<HowitzerInputComponent>(entity);
 					auto &howitzerAiming = view.get<HowitzerAimingComponent>(entity);
 					auto transform = view.get<TransformComponent>(entity);
@@ -120,7 +122,9 @@ namespace DYE::DYEditor
 						INPUT.GetKeyDown(howitzerInput.FireButton) ||
 						INPUT.GetGamepadButton(howitzerInput.ControllerID, howitzerInput.FireGamepadButton))
 					{
-						if (!IgnoreAmmoCount && !howitzerAiming.IsLoadedWithAmmo)
+						bool const hasInfiniteAmmo = wrappedEntity.HasComponent<InfiniteAmmoComponent>();
+
+						if (!hasInfiniteAmmo && !IgnoreAmmoCount && !howitzerAiming.IsLoadedWithAmmo)
 						{
 							continue;
 						}
@@ -150,6 +154,18 @@ namespace DYE::DYEditor
 					if (InputEventBuffingLayer::IsShellInPressed())
 					{
 						howitzerAiming.IsLoadedWithAmmo = true;
+					}
+
+					if (INPUT.GetKeyDown(KeyCode::I))
+					{
+						if (wrappedEntity.HasComponent<InfiniteAmmoComponent>())
+						{
+							wrappedEntity.RemoveComponent<InfiniteAmmoComponent>();
+						}
+						else
+						{
+							wrappedEntity.AddComponent<InfiniteAmmoComponent>();
+						}
 					}
 				}
 			}

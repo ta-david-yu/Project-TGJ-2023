@@ -54,6 +54,11 @@ namespace DYE::DYEditor
 		DYE::Bool IsLoadedWithAmmo = true;
 	};
 
+	DYE_COMPONENT("Infinite Ammo", DYE::DYEditor::InfiniteAmmoComponent)
+	struct InfiniteAmmoComponent
+	{
+	};
+
 	DYE_COMPONENT("Projectile Movement Component", DYE::DYEditor::ProjectileMovementComponent)
 	struct ProjectileMovementComponent
 	{

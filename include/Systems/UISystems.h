@@ -221,18 +221,59 @@ namespace DYE::DYEditor
 		}
 	};
 
+	DYE_SYSTEM("Reloader Window System", DYE::DYEditor::ReloaderWindowSystem)
+	struct ReloaderWindowSystem final : public SystemBase
+	{
+		ExecutionPhase GetPhase() const override { return ExecutionPhase::ImGui; }
+		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
+		{
+
+		}
+	};
+
+	DYE_SYSTEM("Turtle Status Window System", DYE::DYEditor::TurtleStatusWindowSystem)
+	struct TurtleStatusWindowSystem final : public SystemBase
+	{
+		ExecutionPhase GetPhase() const override { return ExecutionPhase::ImGui; }
+		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
+		{
+			auto view = world.GetView<PlayerComponent, InvincibleComponent>();
+			for (auto entity : view)
+			{
+				ImGuiIO& io = ImGui::GetIO();
+				ImGuiWindowFlags windowFlags =
+					ImGuiWindowFlags_NoDecoration |
+					ImGuiWindowFlags_AlwaysAutoResize |
+					ImGuiWindowFlags_NoSavedSettings |
+					ImGuiWindowFlags_NoFocusOnAppearing |
+					ImGuiWindowFlags_NoNav |
+					ImGuiWindowFlags_NoMove;
+
+				const ImGuiViewport* viewport = ImGui::GetMainViewport();
+				ImVec2 workPos = viewport->WorkPos; // Use work area to avoid menu-bar/task-bar, if any!
+				ImVec2 workSize = viewport->WorkSize;
+
+				float const paddingY = 10;
+				ImVec2 windowPos = ImVec2(workPos.x + workSize.x * 0.5f, workPos.y + workSize.y - paddingY);
+				ImVec2 windowPivot = ImVec2(0.5f, 1);
+
+				ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPivot);
+				ImGui::SetNextWindowBgAlpha(0.35f);
+
+				if (ImGui::Begin("SUPER TURTLE MODE", nullptr, windowFlags))
+				{
+					ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "SUPER TURTLE MODE");
+				}
+				ImGui::End();
+			}
+		}
+
+	};
 
 	DYE_SYSTEM("Aimer Window System", DYE::DYEditor::AimerWindowSystem)
 	struct AimerWindowSystem final : public SystemBase
 	{
-		std::shared_ptr<Texture2D> TurtleTexture;
-
 		ExecutionPhase GetPhase() const override { return ExecutionPhase::Render; }
-
-		void InitializeLoad(DYE::DYEditor::World &world, DYE::DYEditor::InitializeLoadParameters) override
-		{
-			TurtleTexture = Texture2D::Create("assets//Textures//Turtle.png");
-		}
 
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
 		{
@@ -313,7 +354,7 @@ namespace DYE::DYEditor
 						auto const position = transform.Position + offset;
 						float const radius = 0.4f;
 						DebugDraw::Circle(position, radius, glm::vec3(0, 0, 1), Color::White);
-						DebugDraw::Line(position, position + transform.GetRight() * radius, Color::White);
+						//DebugDraw::Line(position, position + transform.GetRight() * radius, Color::White);
 					}
 				}
 
