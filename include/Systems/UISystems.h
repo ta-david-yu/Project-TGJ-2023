@@ -303,6 +303,38 @@ namespace DYE::DYEditor
 						DebugDraw::Circle(transform.Position + offset, circle.Radius, glm::vec3(0, 0, 1), drawCircle.Color);
 					}
 				}
+
+				// Player projectiles
+				{
+					auto playerProjectileView = world.GetView<RenderedOnAimerWindowComponent, ProjectileMovementComponent, TransformComponent>();
+					for (auto projectileEntity: playerProjectileView)
+					{
+						auto &transform = playerProjectileView.get<TransformComponent>(projectileEntity);
+						auto const position = transform.Position + offset;
+						float const radius = 0.4f;
+						DebugDraw::Circle(position, radius, glm::vec3(0, 0, 1), Color::White);
+						DebugDraw::Line(position, position + transform.GetRight() * radius, Color::White);
+					}
+				}
+
+				// Explosion animations
+				{
+					auto explosionView = world.GetView<ExplodeAnimationComponent, TransformComponent>();
+					for (auto explosionEntity : explosionView)
+					{
+						auto &explodeAnimation = explosionView.get<ExplodeAnimationComponent>(explosionEntity);
+						auto &transform = explosionView.get<TransformComponent>(explosionEntity);
+
+						float const progress = glm::clamp(explodeAnimation.Timer / explodeAnimation.AnimationTime, 0.0f, 1.0f);
+						float const t = GetEasingFunction(Ease::EaseOutCubic)(progress);
+
+						glm::vec4 const color = Math::Lerp(explodeAnimation.StartColor, explodeAnimation.EndColor, t);
+						float const radius = Math::Lerp(explodeAnimation.StartRadius, explodeAnimation.EndRadius, t);
+
+						auto const position = transform.Position + offset;
+						DebugDraw::Circle(position, radius, glm::vec3(0, 0, 1), color);
+					}
+				}
 			}
 		}
 	};

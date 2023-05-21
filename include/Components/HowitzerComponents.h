@@ -67,6 +67,11 @@ namespace DYE::DYEditor
 		DYE::Float TravelledDistance = 0.0f;
 	};
 
+	DYE_COMPONENT("Rendered On Aimer Window Component", DYE::DYEditor::RenderedOnAimerWindowComponent)
+	struct RenderedOnAimerWindowComponent
+	{
+	};
+
 	DYE_COMPONENT("Debug Draw Sphere Component", DYE::DYEditor::DebugDrawSphereComponent)
 	struct DebugDrawSphereComponent
 	{

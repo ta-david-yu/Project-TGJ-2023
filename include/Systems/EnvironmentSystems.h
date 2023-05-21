@@ -92,6 +92,13 @@ namespace DYE::DYEditor
 
 					auto &multiplyPointOnKilled = newRocketEntity.AddComponent<MultiplyPointsOfTeamOnKilledComponent>();
 					multiplyPointOnKilled.TeamIDToMultiplyPoints = PLAYER_TEAM;
+
+					auto &explodeAnimation = newRocketEntity.AddComponent<PlayExplodeAnimationOnKilledComponent>();
+					explodeAnimation.StartRadius = collider.Radius;
+					explodeAnimation.EndRadius =  collider.Radius * 1.5f;
+					explodeAnimation.StartColor = Color::Red;
+					explodeAnimation.EndColor = glm::vec4(1, 0, 0, 0);
+					explodeAnimation.AnimationTime = 1;
 				}
 			}
 		}
@@ -138,6 +145,8 @@ namespace DYE::DYEditor
 
 				// Spawn objective.
 				Entity newObjectiveEntity = world.CreateEntity("Objective");
+				newObjectiveEntity.AddComponent<ObjectiveComponent>();
+
 				auto &newObjectiveTransform = newObjectiveEntity.AddComponent<TransformComponent>();
 				newObjectiveTransform.Position = {startPosition, 0};
 
@@ -153,7 +162,12 @@ namespace DYE::DYEditor
 				auto &multiplyPointOnKilled = newObjectiveEntity.AddComponent<AddPointsToTeamOnKilledComponent>();
 				multiplyPointOnKilled.TeamIDToAddTo = PLAYER_TEAM;
 
-				newObjectiveEntity.AddComponent<ObjectiveComponent>();
+				auto &animation = newObjectiveEntity.AddComponent<PlayExplodeAnimationOnKilledComponent>();
+				animation.StartRadius = collider.Radius;
+				animation.EndRadius = collider.Radius * 1.5f;
+				animation.StartColor = Color::Green;
+				animation.EndColor = glm::vec4(0, 1, 0, 0);
+				animation.AnimationTime = 1.0f;
 			}
 		}
 
@@ -192,17 +206,6 @@ namespace DYE::DYEditor
 					// Hit something! Try to kill it.
 					Entity wrappedTargetEntity = world.WrapIdentifierIntoEntity(targetEntity);
 					wrappedTargetEntity.AddOrGetComponent<KilledComponent>();
-
-					// Play hit animation.
-					Entity explodeEntity = world.CreateEntity("Rocket Hit Effect");
-					explodeEntity.AddComponent<TransformComponent>().Position = killerTransform.Position;
-
-					auto &explodeAnimation = explodeEntity.AddComponent<ExplodeAnimationComponent>();
-					explodeAnimation.StartRadius = 0.2f;
-					explodeAnimation.EndRadius = 5.5f;
-					explodeAnimation.StartColor = Color::Red;
-					explodeAnimation.EndColor = glm::vec4(1, 0, 0, 0);
-					explodeAnimation.AnimationTime = 1.25f;
 
 					hitSomething = true;
 				}

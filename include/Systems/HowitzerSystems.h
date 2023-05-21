@@ -134,14 +134,14 @@ namespace DYE::DYEditor
 						auto &projectileMovement = firedProjectile.AddComponent<ProjectileMovementComponent>();
 						projectileMovement.MaxTravelDistance = howitzerAiming.CurrDistance;
 
+						firedProjectile.AddComponent<RenderedOnAimerWindowComponent>();
+
 						auto &explodeOnKilled = firedProjectile.AddComponent<ExplodeOnKilledComponent>();
 						explodeOnKilled.TeamIDToKill = ENEMY_TEAM;
 						explodeOnKilled.ExplodeRadius = 3.5f;
 
 						auto &spriteRenderer = firedProjectile.AddComponent<SpriteRendererComponent>();
 						spriteRenderer.Texture = Texture2D::Create("assets//Textures//Bullet.png");
-
-						//firedProjectile.AddComponent<DrawTriangleOnTransformComponent>();
 
 						// Used up the ammo.
 						howitzerAiming.IsLoadedWithAmmo = false;

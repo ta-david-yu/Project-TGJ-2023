@@ -360,6 +360,33 @@ namespace DYE::DYEditor
 			);
 
 		// Component located in include/Components/HowitzerComponents.h
+		TypeRegistry::RegisterComponentType<DYE::DYEditor::RenderedOnAimerWindowComponent>
+			(
+				"Rendered On Aimer Window Component",
+				ComponentTypeDescriptor
+					{
+						.Serialize = [](Entity& entity, SerializedComponent& serializedComponent)
+						{
+
+							return SerializationResult {};
+						},
+						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
+						{
+							entity.AddOrGetComponent<DYE::DYEditor::RenderedOnAimerWindowComponent>();
+							return DeserializationResult {};
+						},
+						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
+						{
+							bool changed = false;
+							ImGui::Indent();
+							ImGui::TextUnformatted("The component doesn't have any properties (i.e. DYE_PROPERTY).");
+							ImGui::Unindent();
+							return changed;
+						}
+					}
+			);
+
+		// Component located in include/Components/HowitzerComponents.h
 		TypeRegistry::RegisterComponentType<DYE::DYEditor::DebugDrawSphereComponent>
 			(
 				"Debug Draw Sphere Component",
