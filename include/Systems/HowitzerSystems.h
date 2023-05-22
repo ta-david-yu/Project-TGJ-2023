@@ -46,6 +46,11 @@ namespace DYE::DYEditor
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
 		{
 			{
+				if (INPUT.GetKeyDown(KeyCode::O))
+				{
+					UseDebugKeyboardInput = !UseDebugKeyboardInput;
+				}
+
 				auto view = world.GetView<HowitzerInputComponent, HowitzerAimingComponent, TransformComponent>();
 				for (auto entity: view)
 				{
@@ -87,33 +92,36 @@ namespace DYE::DYEditor
 					}
 					else
 					{
-						// -1 ~ 1: the orientation of howitzer
-						float const x = INPUT.GetGamepadAxis(howitzerInput.ControllerID, GamepadAxis::LeftTrigger);
-						float const y = INPUT.GetGamepadAxis(howitzerInput.ControllerID, GamepadAxis::RightTrigger);
-
-						glm::vec2 const axis = {x * 2 - 1, y * 2 - 1};
-						float const length = glm::length(axis);
-						if (length > 0.0001f)
+						if (INPUT.IsGamepadConnected(howitzerInput.ControllerID))
 						{
-							float const angleRadian = glm::atan(axis.y, axis.x);
-							howitzerAiming.AngleDegreeRelativeToParent = glm::degrees(angleRadian);
-						}
+							// -1 ~ 1: the orientation of howitzer
+							float const x = INPUT.GetGamepadAxis(howitzerInput.ControllerID, GamepadAxis::LeftTrigger);
+							float const y = INPUT.GetGamepadAxis(howitzerInput.ControllerID, GamepadAxis::RightTrigger);
 
-						if (InputEventBuffingLayer::IsIncreaseDistancePressed())
-						{
-							howitzerAiming.CurrDistance += howitzerInput.DistanceChangePerPress;
-							if (howitzerAiming.CurrDistance > howitzerAiming.MaxDistance)
+							glm::vec2 const axis = {x * 2 - 1, y * 2 - 1};
+							float const length = glm::length(axis);
+							if (length > 0.0001f)
 							{
-								howitzerAiming.CurrDistance = howitzerAiming.MaxDistance;
+								float const angleRadian = glm::atan(axis.y, axis.x);
+								howitzerAiming.AngleDegreeRelativeToParent = glm::degrees(angleRadian);
 							}
-						}
 
-						if (InputEventBuffingLayer::IsDecreaseDistancePressed())
-						{
-							howitzerAiming.CurrDistance -= howitzerInput.DistanceChangePerPress;
-							if (howitzerAiming.CurrDistance < howitzerAiming.MinDistance)
+							if (InputEventBuffingLayer::IsIncreaseDistancePressed())
 							{
-								howitzerAiming.CurrDistance = howitzerAiming.MinDistance;
+								howitzerAiming.CurrDistance += howitzerInput.DistanceChangePerPress;
+								if (howitzerAiming.CurrDistance > howitzerAiming.MaxDistance)
+								{
+									howitzerAiming.CurrDistance = howitzerAiming.MaxDistance;
+								}
+							}
+
+							if (InputEventBuffingLayer::IsDecreaseDistancePressed())
+							{
+								howitzerAiming.CurrDistance -= howitzerInput.DistanceChangePerPress;
+								if (howitzerAiming.CurrDistance < howitzerAiming.MinDistance)
+								{
+									howitzerAiming.CurrDistance = howitzerAiming.MinDistance;
+								}
 							}
 						}
 					}

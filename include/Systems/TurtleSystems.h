@@ -17,20 +17,28 @@ namespace DYE::DYEditor
 	DYE_SYSTEM("Turtle Input System", DYE::DYEditor::TurtleInputSystem)
 	struct TurtleInputSystem final : public SystemBase
 	{
+		bool UseDebugKeyboardInput = false;
+		float DebugAngularSpeedInDegree = 20;
+
 		ExecutionPhase GetPhase() const final { return ExecutionPhase::Update; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
 		{
-			auto view = world.GetView<TurtleInputComponent, TankRotationComponent, TankMovementComponent>();
+			if (INPUT.GetKeyDown(KeyCode::O))
+			{
+				UseDebugKeyboardInput = !UseDebugKeyboardInput;
+			}
 
+			auto view = world.GetView<TurtleInputComponent, TankRotationComponent, TankMovementComponent>();
 			for (auto entity : view)
 			{
+				Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
+
 				auto turtleInput = view.get<TurtleInputComponent>(entity);
 				auto &targetRotation = view.get<TankRotationComponent>(entity);
 				auto &tankMovement = view.get<TankMovementComponent>(entity);
 
 				if (INPUT.GetKeyDown(KeyCode::I))
 				{
-					Entity wrappedEntity = world.WrapIdentifierIntoEntity(entity);
 					if (wrappedEntity.HasComponent<InvincibleComponent>())
 					{
 						wrappedEntity.RemoveComponent<InvincibleComponent>();
@@ -41,31 +49,54 @@ namespace DYE::DYEditor
 					}
 				}
 
-				if (!INPUT.IsGamepadConnected(turtleInput.ControllerID))
+				if (UseDebugKeyboardInput)
 				{
-					continue;
+					if (INPUT.GetKey(KeyCode::A))
+					{
+						targetRotation.AngleInRadian += glm::radians(DebugAngularSpeedInDegree) * TIME.DeltaTime();
+					}
+					if (INPUT.GetKey(KeyCode::D))
+					{
+						targetRotation.AngleInRadian -= glm::radians(DebugAngularSpeedInDegree) * TIME.DeltaTime();
+					}
+
+					if (INPUT.GetKey(KeyCode::W))
+					{
+						tankMovement.InputBuffer = 1;
+					}
+					if (INPUT.GetKey(KeyCode::S))
+					{
+						tankMovement.InputBuffer = -1;
+					}
 				}
-
-				// Rotation
-				float const horizontal = INPUT.GetGamepadAxis(turtleInput.ControllerID, GamepadAxis::LeftStickHorizontal);
-				float const vertical = INPUT.GetGamepadAxis(turtleInput.ControllerID, GamepadAxis::LeftStickVertical);
-
-				glm::vec2 const axis = {horizontal, vertical};
-				if (glm::length2(axis) > 0.5f * 0.5f)
+				else
 				{
-					float const angleRadian = glm::atan(axis.y, axis.x);
-					targetRotation.AngleInRadian = angleRadian;
-				}
+					if (!INPUT.IsGamepadConnected(turtleInput.ControllerID))
+					{
+						continue;
+					}
 
-				// Movement
-				float const moveVertical = INPUT.GetGamepadAxis(turtleInput.ControllerID, GamepadAxis::RightStickVertical);
-				if (glm::abs(moveVertical) > 0.1f)
-				{
-					tankMovement.InputBuffer = moveVertical;
-				}
+					// Rotation
+					float const horizontal = INPUT.GetGamepadAxis(turtleInput.ControllerID,
+																  GamepadAxis::LeftStickHorizontal);
+					float const vertical = INPUT.GetGamepadAxis(turtleInput.ControllerID,
+																GamepadAxis::LeftStickVertical);
 
-				//float const angleDegree = glm::degrees(angleRadian);
-				//transform.Rotation = glm::quat {glm::vec3 {0, 0, angleRadian}};
+					glm::vec2 const axis = {horizontal, vertical};
+					if (glm::length2(axis) > 0.5f * 0.5f)
+					{
+						float const angleRadian = glm::atan(axis.y, axis.x);
+						targetRotation.AngleInRadian = angleRadian;
+					}
+
+					// Movement
+					float const moveVertical = INPUT.GetGamepadAxis(turtleInput.ControllerID,
+																	GamepadAxis::RightStickVertical);
+					if (glm::abs(moveVertical) > 0.1f)
+					{
+						tankMovement.InputBuffer = moveVertical;
+					}
+				}
 			}
 		}
 	};
