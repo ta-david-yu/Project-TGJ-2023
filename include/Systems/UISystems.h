@@ -217,6 +217,7 @@ namespace DYE::DYEditor
 
 			ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always, windowPivot);
 			ImGui::SetNextWindowBgAlpha(0.35f);
+			ImGui::SetNextWindowViewport(viewport->ID);
 
 			if (ImGui::Begin("Title Tutorial UI", nullptr, windowFlags))
 			{
