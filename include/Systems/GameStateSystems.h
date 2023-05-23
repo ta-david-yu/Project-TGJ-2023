@@ -181,13 +181,13 @@ namespace DYE::DYEditor
 		ExecutionPhase GetPhase() const override { return ExecutionPhase::Update; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) override
 		{
-			if (INPUT.GetKeyDown(KeyCode::Escape))
+			if (INPUT.GetKeyDown(KeyCode::F1))
 			{
 				auto &loadSceneComponent = world.CreateCommandEntity().AddComponent<LoadSceneComponent>();
 				loadSceneComponent.SceneAssetPath = "assets//Scenes//TitleScene.tscene";
 			}
 
-			if (INPUT.GetKeyDown(KeyCode::F1))
+			if (INPUT.GetKeyDown(KeyCode::F2))
 			{
 				auto &loadSceneComponent = world.CreateCommandEntity().AddComponent<LoadSceneComponent>();
 				loadSceneComponent.SceneAssetPath = "assets//Scenes//GameScene.tscene";

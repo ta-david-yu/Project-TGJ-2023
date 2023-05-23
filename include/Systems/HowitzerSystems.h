@@ -41,14 +41,20 @@ namespace DYE::DYEditor
 	{
 		bool UseDebugKeyboardInput = false;
 		bool IgnoreAmmoCount = false;
+		float AimRotationDirection = 1.0f;
 
 		ExecutionPhase GetPhase() const final { return ExecutionPhase::Update; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
 		{
 			{
-				if (INPUT.GetKeyDown(KeyCode::O))
+				if (INPUT.GetKeyDown(KeyCode::F5))
 				{
 					UseDebugKeyboardInput = !UseDebugKeyboardInput;
+				}
+
+				if (INPUT.GetKeyDown(KeyCode::F6))
+				{
+					AimRotationDirection = -AimRotationDirection;
 				}
 
 				auto view = world.GetView<HowitzerInputComponent, HowitzerAimingComponent, TransformComponent>();
@@ -103,7 +109,7 @@ namespace DYE::DYEditor
 							if (length > 0.0001f)
 							{
 								float const angleRadian = glm::atan(axis.y, axis.x);
-								howitzerAiming.AngleDegreeRelativeToParent = glm::degrees(angleRadian);
+								howitzerAiming.AngleDegreeRelativeToParent = AimRotationDirection * glm::degrees(angleRadian);
 							}
 
 							if (InputEventBuffingLayer::IsIncreaseDistancePressed())
@@ -202,7 +208,7 @@ namespace DYE::DYEditor
 						wrappedEntity.RemoveComponent<ShellComponent>();
 					}
 
-					if (INPUT.GetKeyDown(KeyCode::I))
+					if (INPUT.GetKeyDown(KeyCode::F7))
 					{
 						if (wrappedEntity.HasComponent<InfiniteAmmoComponent>())
 						{

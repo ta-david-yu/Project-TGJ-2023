@@ -23,7 +23,7 @@ namespace DYE::DYEditor
 		ExecutionPhase GetPhase() const final { return ExecutionPhase::Update; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
 		{
-			if (INPUT.GetKeyDown(KeyCode::O))
+			if (INPUT.GetKeyDown(KeyCode::F5))
 			{
 				UseDebugKeyboardInput = !UseDebugKeyboardInput;
 			}
@@ -37,7 +37,7 @@ namespace DYE::DYEditor
 				auto &targetRotation = view.get<TankRotationComponent>(entity);
 				auto &tankMovement = view.get<TankMovementComponent>(entity);
 
-				if (INPUT.GetKeyDown(KeyCode::I))
+				if (INPUT.GetKeyDown(KeyCode::F7))
 				{
 					if (wrappedEntity.HasComponent<InvincibleComponent>())
 					{
