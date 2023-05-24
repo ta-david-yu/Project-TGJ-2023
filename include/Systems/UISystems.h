@@ -288,6 +288,12 @@ namespace DYE::DYEditor
 					bool button2 = false;
 					bool button3 = false;
 
+
+					ImDrawList *pDrawList = ImGui::GetWindowDrawList();
+
+					ImU32 highlightColor = ImGui::GetColorU32(ImVec4(0, 1, 0, 1));
+					ImU32 disabledColor = ImGui::GetColorU32(ImVec4(1, 1, 1, 0.8f));
+
 					ImVec4 codeColor(1, 1, 1, 1);
 					auto tryGetShell = wrappedEntity.TryGetComponent<ShellComponent>();
 					if (!tryGetShell.has_value())
@@ -333,12 +339,50 @@ namespace DYE::DYEditor
 							//highlightButtonBox = true;
 							highlightFireButton = true;
 						}
+
+						// Draw shell
+						glm::vec2 tip = topLeftPos + glm::vec2(310, 500);
+						glm::vec2 shellTopLeft = topLeftPos + glm::vec2(280, 550);
+						glm::vec2 shellTopRight = topLeftPos + glm::vec2(340, 550);
+						glm::vec2 shellBotLeft = topLeftPos + glm::vec2(280, 690);
+						glm::vec2 shellBotRight = topLeftPos + glm::vec2(340, 690);
+
+						auto shellColor = highlightTube? highlightColor : disabledColor;
+						if (shell.HasAmmo)
+						{
+							pDrawList->AddTriangleFilled
+							(
+								ImVec2(tip.x, tip.y),
+								ImVec2(shellTopLeft.x, shellTopLeft.y),
+								ImVec2(shellTopRight.x, shellTopRight.y),
+								shellColor
+							);
+
+							pDrawList->AddRectFilled
+							(
+								ImVec2(shellTopLeft.x, shellTopLeft.y),
+								ImVec2(shellBotRight.x, shellBotRight.y),
+								shellColor
+							);
+						}
+						else
+						{
+							pDrawList->AddTriangle
+							(
+								ImVec2(tip.x, tip.y),
+								ImVec2(shellTopLeft.x, shellTopLeft.y),
+								ImVec2(shellTopRight.x, shellTopRight.y),
+								shellColor
+							);
+
+							pDrawList->AddRect
+							(
+								ImVec2(shellTopLeft.x, shellTopLeft.y),
+								ImVec2(shellBotRight.x, shellBotRight.y),
+								shellColor
+							);
+						}
 					}
-
-					ImDrawList *pDrawList = ImGui::GetWindowDrawList();
-
-					ImU32 highlightColor = ImGui::GetColorU32(ImVec4(0, 1, 0, 1));
-					ImU32 disabledColor = ImGui::GetColorU32(ImVec4(1, 1, 1, 0.8f));
 
 					// Draw button box
 					glm::vec2 buttonBoxMin = topLeftPos + glm::vec2(100, 500);
