@@ -46,6 +46,30 @@ namespace DYE::DYEditor
 	DYE_SYSTEM("Game Effect On Killed System", DYE::DYEditor::GameEffectOnKilledSystem)
 	struct GameEffectOnKilledSystem final : public SystemBase
 	{
+		AudioSource PlayerKilledSoundSource;
+		AudioSource ExplodeSoundSource;
+
+		void InitializeLoad(DYE::DYEditor::World &world, DYE::DYEditor::InitializeLoadParameters) override
+		{
+			PlayerKilledSoundSource.SetClip(AudioClip::Create
+			(
+				"assets//AudIo//explode-02.wav",
+				AudioClipProperties
+				{
+					.LoadType = AudioLoadType::DecompressOnLoad
+				}
+			));
+
+			ExplodeSoundSource.SetClip(AudioClip::Create
+			(
+				"assets//AudIo//explode-01.wav",
+				AudioClipProperties
+					{
+						.LoadType = AudioLoadType::DecompressOnLoad
+					}
+			));
+		}
+
 		ExecutionPhase GetPhase() const final { return ExecutionPhase::Update; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
 		{
@@ -88,6 +112,8 @@ namespace DYE::DYEditor
 					explodeAnimation.StartRadius = explodeRadius * 0.3f;
 					explodeAnimation.EndRadius = explodeRadius + 0.75f;
 					explodeAnimation.AnimationTime = 1.0f;
+
+					ExplodeSoundSource.Play();
 				}
 			}
 
@@ -109,6 +135,15 @@ namespace DYE::DYEditor
 					explodeAnimation.StartColor = explodeAnimationOnKilled.StartColor;
 					explodeAnimation.EndColor = explodeAnimationOnKilled.EndColor;
 					explodeAnimation.AnimationTime = explodeAnimationOnKilled.AnimationTime;
+				}
+			}
+
+			// Play player killed sound effect on
+			{
+				auto view = world.GetView<KilledComponent, PlayerKilledSoundComponent>();
+				for (auto entity: view)
+				{
+					PlayerKilledSoundSource.Play();
 				}
 			}
 

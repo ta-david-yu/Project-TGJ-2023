@@ -80,14 +80,15 @@ namespace DYE::DYEditor
 		DYE::Int32 TargetSequenceNumber = 441;
 
 		bool IsOperated() const { return IsButton1Operated && IsButton2Operated && IsButton3Operated; }
-		void CheckSequenceAndUpdate()
+		bool CheckSequenceAndUpdate()
 		{
 			if (IsOperated())
 			{
 				DYE_LOG("Shell Succeed!");
 				ActivationSucceed = true;
-				//ActivationSucceed = SequenceNumber == TargetSequenceNumber;
+				return true;
 			}
+			return false;
 		}
 	};
 

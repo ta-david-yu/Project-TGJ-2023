@@ -42,6 +42,58 @@ namespace DYE::DYEditor
 		bool UseDebugKeyboardInput = false;
 		bool IgnoreAmmoCount = false;
 		float AimRotationDirection = 1.0f;
+		AudioSource FireSoundSource;
+		AudioSource ShellInSoundSource;
+		AudioSource ShellOutSoundSource;
+		AudioSource ButtonCheckSoundSource;
+		AudioSource ReadyToFireSoundSource;
+
+		AudioSource RotateClickSoundSource;
+
+		void InitializeLoad(DYE::DYEditor::World &world, DYE::DYEditor::InitializeLoadParameters) override
+		{
+			FireSoundSource.SetClip(AudioClip::Create(
+				"assets//Audio//shot-00.wav",
+				AudioClipProperties
+				{
+					.LoadType = AudioLoadType::DecompressOnLoad
+				}));
+
+			ShellInSoundSource.SetClip(AudioClip::Create(
+				"assets//Audio//shell_in-00.wav",
+				AudioClipProperties
+					{
+						.LoadType = AudioLoadType::DecompressOnLoad
+					}));
+
+			ShellOutSoundSource.SetClip(AudioClip::Create(
+				"assets//Audio//shell_out-00.wav",
+				AudioClipProperties
+					{
+						.LoadType = AudioLoadType::DecompressOnLoad
+					}));
+
+			ButtonCheckSoundSource.SetClip(AudioClip::Create(
+				"assets//Audio//button_check-00.wav",
+				AudioClipProperties
+					{
+						.LoadType = AudioLoadType::DecompressOnLoad
+					}));
+
+			ReadyToFireSoundSource.SetClip(AudioClip::Create(
+				"assets//Audio//ready_to_fire-00.wav",
+				AudioClipProperties
+					{
+						.LoadType = AudioLoadType::DecompressOnLoad
+					}));
+
+			RotateClickSoundSource.SetClip(AudioClip::Create(
+				"assets//Audio//rotate_click-00.wav",
+				AudioClipProperties
+					{
+						.LoadType = AudioLoadType::DecompressOnLoad
+					}));
+		}
 
 		ExecutionPhase GetPhase() const final { return ExecutionPhase::Update; }
 		void Execute(DYE::DYEditor::World &world, DYE::DYEditor::ExecuteParameters params) final
@@ -71,11 +123,13 @@ namespace DYE::DYEditor
 						if (INPUT.GetKeyDown(howitzerInput.RotateClockwiseButton))
 						{
 							howitzerAiming.AngleDegreeRelativeToParent -= howitzerInput.AngleStepDegreePerPress;
+							RotateClickSoundSource.Play();
 						}
 
 						if (INPUT.GetKeyDown(howitzerInput.RotateAnticlockwiseButton))
 						{
 							howitzerAiming.AngleDegreeRelativeToParent += howitzerInput.AngleStepDegreePerPress;
+							RotateClickSoundSource.Play();
 						}
 
 						if (INPUT.GetKeyDown(howitzerInput.IncreaseDistanceButton))
@@ -85,6 +139,7 @@ namespace DYE::DYEditor
 							{
 								howitzerAiming.CurrDistance = howitzerAiming.MaxDistance;
 							}
+							RotateClickSoundSource.Play();
 						}
 
 						if (INPUT.GetKeyDown(howitzerInput.DecreaseDistanceButton))
@@ -94,6 +149,7 @@ namespace DYE::DYEditor
 							{
 								howitzerAiming.CurrDistance = howitzerAiming.MinDistance;
 							}
+							RotateClickSoundSource.Play();
 						}
 					}
 					else
@@ -119,6 +175,7 @@ namespace DYE::DYEditor
 								{
 									howitzerAiming.CurrDistance = howitzerAiming.MaxDistance;
 								}
+								RotateClickSoundSource.Play();
 							}
 
 							if (InputEventBuffingLayer::IsDecreaseDistancePressed())
@@ -128,6 +185,7 @@ namespace DYE::DYEditor
 								{
 									howitzerAiming.CurrDistance = howitzerAiming.MinDistance;
 								}
+								RotateClickSoundSource.Play();
 							}
 						}
 					}
@@ -136,25 +194,34 @@ namespace DYE::DYEditor
 					{
 						ShellComponent &shell = wrappedEntity.GetComponent<ShellComponent>();
 
+						bool fulfillFireCheck = false;
 						if (InputEventBuffingLayer::IsSimon1Pressed() && !shell.IsButton1Operated)
 						{
 							shell.IsButton1Operated = true;
 							shell.SequenceNumber *= 2;
-							shell.CheckSequenceAndUpdate();
+							ButtonCheckSoundSource.Play();
+							fulfillFireCheck |= shell.CheckSequenceAndUpdate();
 						}
 
 						if (InputEventBuffingLayer::IsSimon2Pressed() && !shell.IsButton2Operated)
 						{
 							shell.IsButton2Operated = true;
 							shell.SequenceNumber += 1;
-							shell.CheckSequenceAndUpdate();
+							ButtonCheckSoundSource.Play();
+							fulfillFireCheck |= shell.CheckSequenceAndUpdate();
 						}
 
 						if (InputEventBuffingLayer::IsSimon3Pressed() && !shell.IsButton3Operated)
 						{
 							shell.IsButton3Operated = true;
 							shell.SequenceNumber = shell.SequenceNumber * shell.SequenceNumber;
-							shell.CheckSequenceAndUpdate();
+							ButtonCheckSoundSource.Play();
+							fulfillFireCheck |= shell.CheckSequenceAndUpdate();
+						}
+
+						if (fulfillFireCheck)
+						{
+							ReadyToFireSoundSource.Play();
 						}
 
 						if (InputEventBuffingLayer::IsFirePressed() ||
@@ -176,7 +243,6 @@ namespace DYE::DYEditor
 							projectileTransform.Position = transform.Position;
 							projectileTransform.Rotation = transform.Rotation;
 
-							// TODO: adjust parameters here.
 							auto &projectileMovement = firedProjectile.AddComponent<ProjectileMovementComponent>();
 							projectileMovement.MaxTravelDistance = howitzerAiming.CurrDistance;
 
@@ -188,6 +254,9 @@ namespace DYE::DYEditor
 
 							auto &spriteRenderer = firedProjectile.AddComponent<SpriteRendererComponent>();
 							spriteRenderer.Texture = Texture2D::Create("assets//Textures//Bullet.png");
+
+							// Play sound effect. (NASTY CODE I KNOW)
+							FireSoundSource.Play();
 
 							// Used up the ammo.
 							shell.HasAmmo = false;
@@ -201,11 +270,15 @@ namespace DYE::DYEditor
 						int rand = std::rand() % 6;
 						//wrappedEntity.AddComponent<ShellComponent>().TargetSequenceNumber = targetSequences[rand];
 						wrappedEntity.AddComponent<ShellComponent>().TargetSequenceNumber = targetSequences[0];
+
+						ShellInSoundSource.Play();
 					}
 
 					if (InputEventBuffingLayer::IsShellOutPressed())
 					{
 						wrappedEntity.RemoveComponent<ShellComponent>();
+
+						ShellOutSoundSource.Play();
 					}
 
 					if (INPUT.GetKeyDown(KeyCode::F7))

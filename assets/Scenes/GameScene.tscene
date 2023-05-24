@@ -172,13 +172,16 @@ Name = 'GameScene'
     Type = 'Rocket Target'
 
     [[Entities.Components]]
+    Type = 'Player Killed Sound'
+	
+    [[Entities.Components]]
     Color = { w = 1.0, x = 1.0, y = 1.0, z = 1.0 }
     IsEnabled = true
     TextureAssetPath = 'assets\Textures\Turtle.png'
     Type = 'Sprite Renderer'
 
     [[Entities.Components]]
-    FullSpeedPerSecond = 5.0
+    FullSpeedPerSecond = 3.0
     InputBuffer = 0.0
     Type = 'Tank Movement Component'
 
