@@ -92,11 +92,15 @@ Name = 'GameScene'
 
     [[Entities.Components]]
     AimRadiusOffset = 4.0
-    InitialSpawnInterval = 4.0
-    SpawnIntervalRandomOffset = 3.0
+    InitialProjectileSpeed = 3.0
+    InitialSpawnInterval = 4.5
+    MaxProjectileSpeed = 7.5
+    SpawnIntervalRandomOffset = 1.0
     SpawnStartingRadius = 25.0
     SpawnTimer = 10.0
     SpawnsPerTarget = 1
+    TimeSinceStart = 0.0
+    TimeWhenProjectileReachMaxSpeed = 120.0
     Type = 'Rocket Spawner'
 
     [[Entities.Components]]
@@ -169,11 +173,11 @@ Name = 'GameScene'
     Type = 'Player'
 
     [[Entities.Components]]
-    Type = 'Rocket Target'
+    Type = 'Player Killed Sound'
 
     [[Entities.Components]]
-    Type = 'Player Killed Sound'
-	
+    Type = 'Rocket Target'
+
     [[Entities.Components]]
     Color = { w = 1.0, x = 1.0, y = 1.0, z = 1.0 }
     IsEnabled = true
@@ -181,7 +185,7 @@ Name = 'GameScene'
     Type = 'Sprite Renderer'
 
     [[Entities.Components]]
-    FullSpeedPerSecond = 3.0
+    FullSpeedPerSecond = 3.5
     InputBuffer = 0.0
     Type = 'Tank Movement Component'
 

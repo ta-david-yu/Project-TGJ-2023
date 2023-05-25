@@ -36,26 +36,67 @@ namespace DYE::DYEditor
 				auto &rocketSpawner = view.get<RocketSpawnerComponent>(entity);
 				auto &spawnerTransform = view.get<TransformComponent>(entity);
 
+				rocketSpawner.TimeSinceStart += TIME.DeltaTime();
 				rocketSpawner.SpawnTimer -= TIME.DeltaTime();
 				if (rocketSpawner.SpawnTimer > 0)
 				{
 					continue;
 				}
 
-				// TODO: randomize Next spawn time.
-				float nextSpawnTime = rocketSpawner.InitialSpawnInterval;
+				float nextSpawnTime =
+					rocketSpawner.InitialSpawnInterval +
+					glm::linearRand(-rocketSpawner.SpawnIntervalRandomOffset, rocketSpawner.SpawnIntervalRandomOffset);
 				rocketSpawner.SpawnTimer += nextSpawnTime;
 
 				// Spawn rocket.
 				for (auto targetEntity: targetView)
 				{
+					auto targetTransform = targetView.get<TransformComponent>(targetEntity);
+
+					glm::vec2 const centerToTarget = targetTransform.Position - spawnerTransform.Position;
+					float spawnerToTargetAngleRadian = glm::atan(centerToTarget.y, centerToTarget.x);
+					if (spawnerToTargetAngleRadian < 0.0f)
+					{
+						// Atan ranges from 0 ~ pi and -pi ~ 0. But we want it to be 0 ~ 2pi
+						// Therefore we add 2pi to anything that's below 0.
+						spawnerToTargetAngleRadian += 2 * glm::pi<float>();
+					}
+
+					// We want to pick a spawn location that's on the opposite half side of the circle where the target is at.
+					float const spawnerToTargetAngleDegree = glm::degrees(spawnerToTargetAngleRadian);
+					float angleDegreeCapA = spawnerToTargetAngleDegree + 90;
+					float angleDegreeCapB = spawnerToTargetAngleDegree - 90;
+					if (angleDegreeCapA <= 0) angleDegreeCapA += 360;
+					if (angleDegreeCapA >= 360) angleDegreeCapA -= 360;
+					if (angleDegreeCapB <= 0) angleDegreeCapB += 360;
+					if (angleDegreeCapB >= 360) angleDegreeCapB -= 360;
+
+					if (angleDegreeCapA > angleDegreeCapB)
+					{
+						angleDegreeCapA -= 360;
+					}
+
+					float spawnAngleDegree = 0;
+					spawnAngleDegree = glm::linearRand(angleDegreeCapA, angleDegreeCapB);
+					if (angleDegreeCapA < angleDegreeCapB)
+					{
+						//spawnAngleDegree = glm::linearRand(angleDegreeCapA, angleDegreeCapB);
+					}
+					else
+					{
+						//spawnAngleDegree = glm::linearRand(angleDegreeCapB, angleDegreeCapA);
+					}
+
+					float const spawnAngleRadian = glm::radians(spawnAngleDegree);
+
 					// Start position.
 					glm::vec2 startPosition = spawnerTransform.Position;
-					startPosition += glm::circularRand(rocketSpawner.SpawnStartingRadius);
+					startPosition.x += rocketSpawner.SpawnStartingRadius * glm::cos(spawnAngleRadian);
+					startPosition.y += rocketSpawner.SpawnStartingRadius * glm::sin(spawnAngleRadian);
+					//startPosition += glm::circularRand(rocketSpawner.SpawnStartingRadius);
 
 					// Aim at.
 					auto offset = glm::diskRand(rocketSpawner.AimRadiusOffset);
-					auto targetTransform = targetView.get<TransformComponent>(targetEntity);
 					glm::vec2 aimAt = targetTransform.Position;
 					aimAt += offset;
 
@@ -83,7 +124,12 @@ namespace DYE::DYEditor
 
 					auto &projectile = newRocketEntity.AddComponent<ProjectileMovementComponent>();
 					projectile.MaxTravelDistance = 60;
-					projectile.TravelSpeedPerSecond = 7.5f;
+
+					// We want to map the speed value exponentially, so it only gets harder faster in the late game.
+					float speedT = glm::clamp(rocketSpawner.TimeSinceStart / rocketSpawner.TimeWhenProjectileReachMaxSpeed, 0.0f, 1.0f);
+					speedT *= speedT;
+
+					projectile.TravelSpeedPerSecond = Math::Lerp(rocketSpawner.InitialProjectileSpeed, rocketSpawner.MaxProjectileSpeed, speedT);
 
 					newRocketEntity.AddComponent<KillRocketTargetOnOverlap>();
 

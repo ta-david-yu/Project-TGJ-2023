@@ -931,7 +931,11 @@ namespace DYE::DYEditor
 							serializedComponent.SetPrimitiveTypePropertyValue("SpawnsPerTarget", component.SpawnsPerTarget);
 							serializedComponent.SetPrimitiveTypePropertyValue("SpawnStartingRadius", component.SpawnStartingRadius);
 							serializedComponent.SetPrimitiveTypePropertyValue("AimRadiusOffset", component.AimRadiusOffset);
+							serializedComponent.SetPrimitiveTypePropertyValue("InitialProjectileSpeed", component.InitialProjectileSpeed);
+							serializedComponent.SetPrimitiveTypePropertyValue("MaxProjectileSpeed", component.MaxProjectileSpeed);
+							serializedComponent.SetPrimitiveTypePropertyValue("TimeWhenProjectileReachMaxSpeed", component.TimeWhenProjectileReachMaxSpeed);
 							serializedComponent.SetPrimitiveTypePropertyValue("SpawnTimer", component.SpawnTimer);
+							serializedComponent.SetPrimitiveTypePropertyValue("TimeSinceStart", component.TimeSinceStart);
 							return SerializationResult {};
 						},
 						.Deserialize = [](SerializedComponent& serializedComponent, DYE::DYEditor::Entity& entity)
@@ -942,7 +946,11 @@ namespace DYE::DYEditor
 							component.SpawnsPerTarget = serializedComponent.GetPrimitiveTypePropertyValueOr<Int32>("SpawnsPerTarget", 1);
 							component.SpawnStartingRadius = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("SpawnStartingRadius", 25);
 							component.AimRadiusOffset = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("AimRadiusOffset", 2.5f);
+							component.InitialProjectileSpeed = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("InitialProjectileSpeed", 3.0f);
+							component.MaxProjectileSpeed = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("MaxProjectileSpeed", 7.5f);
+							component.TimeWhenProjectileReachMaxSpeed = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("TimeWhenProjectileReachMaxSpeed", 120);
 							component.SpawnTimer = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("SpawnTimer", 20.0f);
+							component.TimeSinceStart = serializedComponent.GetPrimitiveTypePropertyValueOr<Float>("TimeSinceStart", 0.0f);
 							return DeserializationResult {};
 						},
 						.DrawInspector = [](DrawComponentInspectorContext &drawInspectorContext, Entity &entity)
@@ -954,7 +962,11 @@ namespace DYE::DYEditor
 							changed |= ImGuiUtil::DrawIntControl("SpawnsPerTarget", component.SpawnsPerTarget); updateContextAfterDrawControlCall(drawInspectorContext);
 							changed |= ImGuiUtil::DrawFloatControl("SpawnStartingRadius", component.SpawnStartingRadius); updateContextAfterDrawControlCall(drawInspectorContext);
 							changed |= ImGuiUtil::DrawFloatControl("AimRadiusOffset", component.AimRadiusOffset); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("InitialProjectileSpeed", component.InitialProjectileSpeed); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("MaxProjectileSpeed", component.MaxProjectileSpeed); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("TimeWhenProjectileReachMaxSpeed", component.TimeWhenProjectileReachMaxSpeed); updateContextAfterDrawControlCall(drawInspectorContext);
 							changed |= ImGuiUtil::DrawFloatControl("SpawnTimer", component.SpawnTimer); updateContextAfterDrawControlCall(drawInspectorContext);
+							changed |= ImGuiUtil::DrawFloatControl("TimeSinceStart", component.TimeSinceStart); updateContextAfterDrawControlCall(drawInspectorContext);
 							return changed;
 						}
 					}
